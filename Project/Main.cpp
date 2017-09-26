@@ -15,13 +15,12 @@ int main(){
 
 	//Number of iterations of the HMC algorithm to be performed, and number of times the algoirthm is 
 	//going to loop
-	int iterations = 1,iter=20;
+	int iterations = 1,iter=100;
 
-	double q=0,p=0,t_step=0.3;
+	double q=0.5,p=2,t_step=0.05;
 
 	//create file to store the data into 
-	FILE * output;
-	output = fopen("HMC_Results.dat","w");
+
 
 
 	for(int i=0;i<iterations;i++)
@@ -35,6 +34,7 @@ int main(){
 	}
 
 	//after all of the simulation sare completed then perform all of the stastical analysis on it
+	
 
 
 
