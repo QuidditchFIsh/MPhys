@@ -6,12 +6,14 @@
 		the main functions will be called from and the final results collected and outputted from. Here
 		I shall be using natural units such that h_bar = c = 1. Beginning with a 1d system. 
 */
-#include <stdio.h>
+#include "Main.h"
 
 
 int main(){
 
 	printf("Beginning Simulation Initalising System\n");
+
+	
 	
 
 
