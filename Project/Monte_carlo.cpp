@@ -23,14 +23,14 @@ void leapFrog(double p,double q,double t_step,double p_new,double q_new){
 
 }
 
-void hmcAlgorithm(double t_step,int iter)
+void hmcAlgorithm(double t_step,int iter,double p,double q)
 {
 	// HMC algorithm executed here
 	//pick out new random momentum (CHECK THAT THIS RANDOM NUMBER GENERATOR IS USABLE MAY NEED TO USE A GAUSIAN)
 
-	double p_new,q_new,p,q,p_propose;
+	double p_new,q_new,p_propose;
 
-
+	//iter is the number of monte carlo updates which will be perfomred. 
 	for(int i=0;i<iter;i++)
 	{
 		p_propose = ((double) rand()/(RAND_MAX));
@@ -47,6 +47,7 @@ void hmcAlgorithm(double t_step,int iter)
 			q = q_new;
 
 		}
+		printf("%d %d\n",p,q );
 		
 	}
 
