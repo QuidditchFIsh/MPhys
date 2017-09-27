@@ -4,3 +4,4 @@
 	Description: This script is where the functions to run the stastics are housed. It will include methods
 		which will calculate the mean and other such stastical variables.
 */
+
