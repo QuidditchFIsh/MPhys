@@ -8,9 +8,8 @@
 
 using namespace std;
 
+void lattice_Evolution(double ,unsigned int ,unsigned int ,vector<vector<vector<double> > > &);
 
-void leapFrog(double ,double ,double ,double& ,double& );
-
-void hmcAlgorithm(double,int,double ,double,vector<vector<vector<double> > > &);
+double hmcAlgorithm(double,double ,double);
 
 double hamiltonian(double ,double );

@@ -6,94 +6,86 @@
 */
 #include "Monte_carlo.h"
 
+void lattice_Evolution(double t_step,unsigned int iter ,unsigned int length,vector<vector<vector<double> > > &lattice)
+{
+	//initalise the variables
+	double p=1;
 
+	//pick out new random P
+	default_random_engine generator;
+ 	normal_distribution<double> distribution(0.0,1.0);
 
-void leapFrog(double p,double q,double t_step,double& p_new,double& q_new){
-	// creation of variables
-	double p_New_Half =0;
+	//update the lattice
 
-	// leaf frog method for a harmonic oscaillator so the differentialtion does not need to be 
-	//approximated 
+	for(unsigned int i=0;i<length;i++)
+	{
+		p=distribution(generator);
+		//printf("%f\n",p);
+		lattice[0][i][0]= hmcAlgorithm(t_step,p,lattice[0][i][0]);
+		//printf("%f %f \n",p,lattice[0][i][1]);
+	}
 
-	//Leapfrog Method
-	p_New_Half = p - (0.5 * t_step * q);
-
-	q_new = q + (t_step * p_New_Half);
-
-	p_new = p_New_Half - (0.5*t_step*q_new);
-	//printf("%f %f %f %f\n",p_new,q_new,p,q);
+#if 1
+	for(unsigned int j=1;j<iter;j++)
+	{
+		for(unsigned int i=0;i<length;i++)
+		{
+			//printf("%d %d \n",j,i);
+			p=distribution(generator);
+			//printf("%f\n",p);
+			lattice[j][i][0]= hmcAlgorithm(t_step,p,lattice[j-1][i][0]);
+			//printf("%f %f \n",p,lattice[0][i][1]);
+		}
+	}
+#endif
 
 
 }
-
-void hmcAlgorithm(double t_step,int iter,double p,double q,vector<vector<vector<double> > > &results)
+double hmcAlgorithm(double t_step,double p_rand,double q_old)
 {
 	// HMC algorithm executed here
-	//pick out new random momentum (CHECK THAT THIS RANDOM NUMBER GENERATOR IS USABLE MAY NEED TO USE A GAUSIAN)
 
-	double p_old,q_old;
-    random_device rd;
-    mt19937 gen(rd());
-    uniform_real_distribution<> dis(0, 1);
-#if 0
-	leapFrog(p,q,t_step,p_new,q_new);
-
-		//printf("%f\n",exp(hamiltonian(p,q)) - exp(hamiltonian(p_new,q_new)));
-
-	if(exp(hamiltonian(p,q)) - exp(hamiltonian(p_new,q_new)) < 1)
-	{
-		//accept the new p and q
-		//if rjectted then the p and q stay the same.
-		p = p_new;
-		q = q_new;
-		//printf("welp");
-
-	}
-	results[0][0][0]=p;
-	results[0][0][1]=q;
-#endif
 	//iter is the number of monte carlo updates which will be perfomred. 
-	for(unsigned int i=0;i<iter;i++)
-	{
-		q_old = q;
-		p_old = dis(gen);
-		p=p_old;
+		double q,p=0,p_old;
+		unsigned int steps=50;
+
+		q = q_old;
+		p_old = p;
+
 
 
 		//now update the p and q with leapforg
 		//leapFrog(p_propose,q,t_step,p_new,q_new);
 
-		p = p - (0.5 * t_step * q);
+		p = p_rand - (0.5 * t_step * q);
 
-		for(unsigned int j=0;j<15;j++)
+		for(unsigned int j=0;j<steps;j++)
 		{
 			q = q + (t_step * p);
 
-			if(j != 3) {p = p - (0.5*t_step*q);}
+			if(j != steps) {p = p - (0.5*t_step*q);}
 		}
 
 		p = p - (0.5 * t_step * q);
 
-		p = -p;
-
-
-
 		//printf("%f\n",exp(hamiltonian(p,q)) - exp(hamiltonian(p_new,q_new)));
 
-		if(1 < exp(hamiltonian(p_old,q_old)) -(hamiltonian(p,q)))
+		if(1 < exp(-hamiltonian(p_old,q_old)) +(hamiltonian(p,q)))
 		{
 			//accept the new p and q
 			//if rjectted then the p and q stay the same.
-			p=p_old;
-			q=q_old;
+			//printf("accept %f\n",q);
+			return q;
+
+		}
+		else
+		{
+			//printf("reject %f\n",q_old);
+			return q_old;
 		}
 		
-		results[0][i][0]=p;
-		results[0][i][1]=q;
-		//results[0][i][3]=hamiltonian(p,q);
 	}
 
-}
 
 double hamiltonian(double p,double q){
 	//calculate the Hamiltonian of the system

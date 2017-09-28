@@ -7,26 +7,47 @@
 
 #include "stastics.h"
 
-double avgX(vector<vector<vector<double> > > &results)
-{
-	double sum =0;
-
-	for(unsigned int i=0;i<100;i++)
-	{
-		sum += results[0][i][1];
-	}
-
-	return sum/100;
-}
-
-void avg_X_Sqd(vector<vector<vector<double> > > &results)
+double avgX(vector<vector<vector<double> > > &results,unsigned int iterations,unsigned int length)
 {	
 	double sum =0;
 
-	for(unsigned int i=0;i<100;i++)
+	for(unsigned int i=0;i<length;i++)
 	{
-		sum += (results[0][i][1]*results[0][i][1]);
-		results[0][i][2] = (sum/(double)i);
+		for(unsigned int j=0;j<iterations;j++)
+		{
+		sum += (results[j][i][0]);
+		}
+		results[0][i][1] = (sum/(double)iterations);
+		sum =0;
 
 	}
+}
+
+void avg_X_Sqd(vector<vector<vector<double> > > &results,unsigned int iterations,unsigned int length)
+{	
+	double sum =0;
+
+	for(unsigned int i=0;i<length;i++)
+	{
+		for(unsigned int j=0;j<iterations;j++)
+		{
+		sum += (results[j][i][0]*results[j][i][0]);
+		results[j][i][1] = (sum/(double)i);
+		}
+		sum =0;
+
+	}
+#if 1
+	for(unsigned int i=0;i<length;i++)
+	{
+		for(unsigned int j=0;j<iterations;j++)
+		{
+		sum += (results[j][i][0]);
+		}
+		results[0][i][1] = (sum/(double)iterations);
+		sum =0;
+
+	}
+#endif
+
 }

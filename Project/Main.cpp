@@ -15,16 +15,20 @@ int main(){
 
 	//Number of iterations of the HMC algorithm to be performed, and number of times the algoirthm is 
 	//going to loop
-	int iterations = 1,iter=100;
 
-	double q=-1.5,p=-1,t_step=0.25;
+
+	int iterations = 1000,length = 1000;
+
+	double t_step=0.1;
+
 
 
 
 	//Initalise the vector .	MAYBE IT WOULD BE QUICKER TO USE A MALLOC AND 1D ARRAY
-	vector<double> v1(iterations,0);
-	vector<vector<double> >v2(iter,v1);
-	vector<vector<vector<double> > >results(3,v2);
+	vector<double> v1(2,0);
+	vector<vector<double> >v2(length,v1);
+	vector<vector<vector<double> > >lattice(iterations,v2);
+
 
 	//create file to store the data into 
 
@@ -33,28 +37,26 @@ int main(){
 
 
 
-	for(int i=0;i<iterations;i++)
-	{
-		//begin each simulation at p=0 and q=0
 
-		hmcAlgorithm(t_step,iter,p,q,results);
+	//begin each simulation at p=0 and q=0
 
-		//write the data to the stastics array 
+	lattice_Evolution(t_step,iterations,length,lattice);
 
-	}
+	//write the data to the stastics array perhaps!!
 
-	avg_X_Sqd(results);
+	#if 1
+	avg_X_Sqd(lattice,iterations,length);
 
-	for(unsigned int i=0;i < 1 ;i++)
-		for(unsigned int j=0;j<100;j++)
+	//for(unsigned int i=0;i < 1 ;i++)
+		for(unsigned int j=0;j<length;j++)
 			{
 				fprintf(output,"%d ",j);
-				fprintf(output,"%f ",results[i][j][0]);
-				fprintf(output,"%f ",results[i][j][1]);
-				fprintf(output,"%f\n ",results[i][j][2]);
-				//fprintf(output,"%f\n",results[i][j][3]);
+				//fprintf(output,"%f ",lattice[i][j][0]);//p
+				//fprintf(output,"%f, ",lattice[499][j][0]);//q
+				fprintf(output,"%f \n",lattice[0][j][1]);//<x^2>
+				//fprintf(output,"%f\n",lattice[i][j][3]);
 			}
-
+	#endif
 
 	//after all of the simulation sare completed then perform all of the stastical analysis on it
 	
