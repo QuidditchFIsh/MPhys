@@ -17,14 +17,14 @@ int main(){
 	//going to loop
 	int iterations = 1,iter=100;
 
-	double q=0.5,p=2,t_step=0.05;
+	double q=-1.5,p=-1,t_step=0.25;
 
 
 
 	//Initalise the vector .	MAYBE IT WOULD BE QUICKER TO USE A MALLOC AND 1D ARRAY
 	vector<double> v1(iterations,0);
 	vector<vector<double> >v2(iter,v1);
-	vector<vector<vector<double> > >results(2,v2);
+	vector<vector<vector<double> > >results(3,v2);
 
 	//create file to store the data into 
 
@@ -42,12 +42,17 @@ int main(){
 		//write the data to the stastics array 
 
 	}
+
+	avg_X_Sqd(results);
+
 	for(unsigned int i=0;i < 1 ;i++)
 		for(unsigned int j=0;j<100;j++)
 			{
-				fprintf(output,"%f ",j*0.05);
+				fprintf(output,"%d ",j);
 				fprintf(output,"%f ",results[i][j][0]);
-				fprintf(output,"%f\n",results[i][j][1]);
+				fprintf(output,"%f ",results[i][j][1]);
+				fprintf(output,"%f\n ",results[i][j][2]);
+				//fprintf(output,"%f\n",results[i][j][3]);
 			}
 
 

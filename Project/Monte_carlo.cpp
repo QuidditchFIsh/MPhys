@@ -31,17 +31,17 @@ void hmcAlgorithm(double t_step,int iter,double p,double q,vector<vector<vector<
 	// HMC algorithm executed here
 	//pick out new random momentum (CHECK THAT THIS RANDOM NUMBER GENERATOR IS USABLE MAY NEED TO USE A GAUSIAN)
 
-	double p_new,q_new,p_propose;
+	double p_old,q_old;
     random_device rd;
     mt19937 gen(rd());
     uniform_real_distribution<> dis(0, 1);
-#if 1
+#if 0
 	leapFrog(p,q,t_step,p_new,q_new);
 
 		//printf("%f\n",exp(hamiltonian(p,q)) - exp(hamiltonian(p_new,q_new)));
 
 	if(exp(hamiltonian(p,q)) - exp(hamiltonian(p_new,q_new)) < 1)
-	{ x
+	{
 		//accept the new p and q
 		//if rjectted then the p and q stay the same.
 		p = p_new;
@@ -55,27 +55,42 @@ void hmcAlgorithm(double t_step,int iter,double p,double q,vector<vector<vector<
 	//iter is the number of monte carlo updates which will be perfomred. 
 	for(unsigned int i=0;i<iter;i++)
 	{
-		p_propose = dis(gen);
+		q_old = q;
+		p_old = dis(gen);
+		p=p_old;
+
 
 		//now update the p and q with leapforg
-		leapFrog(p_propose,q,t_step,p_new,q_new);
+		//leapFrog(p_propose,q,t_step,p_new,q_new);
+
+		p = p - (0.5 * t_step * q);
+
+		for(unsigned int j=0;j<15;j++)
+		{
+			q = q + (t_step * p);
+
+			if(j != 3) {p = p - (0.5*t_step*q);}
+		}
+
+		p = p - (0.5 * t_step * q);
+
+		p = -p;
+
+
 
 		//printf("%f\n",exp(hamiltonian(p,q)) - exp(hamiltonian(p_new,q_new)));
 
-		if(exp(hamiltonian(p_propose,q)) - exp(hamiltonian(p_new,q_new)) < 1)
+		if(1 < exp(hamiltonian(p_old,q_old)) -(hamiltonian(p,q)))
 		{
 			//accept the new p and q
 			//if rjectted then the p and q stay the same.
-			p = p_new;
-			q = q_new;
-		//	printf("%f\n",q);
-		//	printf("welp\n");
-
+			p=p_old;
+			q=q_old;
 		}
-		printf("%f %f\n",p,q);
-
+		
 		results[0][i][0]=p;
 		results[0][i][1]=q;
+		//results[0][i][3]=hamiltonian(p,q);
 	}
 
 }
