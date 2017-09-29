@@ -17,9 +17,10 @@ int main(){
 	//going to loop
 
 
-	int iterations = 1000,length = 1000;
+	int iterations = 2000,length = 10000;
 
-	double t_step=0.1;
+	double t_step=0.05;
+
 
 
 
@@ -50,10 +51,10 @@ int main(){
 	//for(unsigned int i=0;i < 1 ;i++)
 		for(unsigned int j=0;j<length;j++)
 			{
-				fprintf(output,"%d ",j);
+				//fprintf(output,"%d ",j);
 				//fprintf(output,"%f ",lattice[i][j][0]);//p
-				//fprintf(output,"%f, ",lattice[499][j][0]);//q
-				fprintf(output,"%f \n",lattice[0][j][1]);//<x^2>
+				fprintf(output,"%f, ",lattice[1999][j][0]);//q
+				//fprintf(output,"%f \n",lattice[0][j][1]);//<x^2>
 				//fprintf(output,"%f\n",lattice[i][j][3]);
 			}
 	#endif

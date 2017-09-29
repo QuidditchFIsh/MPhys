@@ -47,7 +47,7 @@ double hmcAlgorithm(double t_step,double p_rand,double q_old)
 
 	//iter is the number of monte carlo updates which will be perfomred. 
 		double q,p=0,p_old;
-		unsigned int steps=50;
+		unsigned int steps=25;
 
 		q = q_old;
 		p_old = p;
@@ -57,16 +57,16 @@ double hmcAlgorithm(double t_step,double p_rand,double q_old)
 		//now update the p and q with leapforg
 		//leapFrog(p_propose,q,t_step,p_new,q_new);
 
-		p = p_rand - (0.5 * t_step * q);
+		p = p_rand - (0.5 * t_step * (q + (4*q*q*q)));
 
 		for(unsigned int j=0;j<steps;j++)
 		{
 			q = q + (t_step * p);
 
-			if(j != steps) {p = p - (0.5*t_step*q);}
+			if(j != steps) {p = p - (0.5 * t_step * (q + (4*q*q*q)));}
 		}
 
-		p = p - (0.5 * t_step * q);
+		p = p - (0.5 * t_step * (q + (4*q*q*q)));
 
 		//printf("%f\n",exp(hamiltonian(p,q)) - exp(hamiltonian(p_new,q_new)));
 
@@ -94,9 +94,9 @@ double hamiltonian(double p,double q){
 
 	//Set m=1;
 
-	H = (p * p ) + (q * q);
+	H = (pow(p,2) * 0.5) + (pow(q,2)* 0.5) + pow(q,4);
 
-	return (H * 0.5);
+	return H ;
 
 }
 
