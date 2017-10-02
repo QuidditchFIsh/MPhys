@@ -49,5 +49,31 @@ void avg_X_Sqd(vector<vector<vector<double> > > &results,unsigned int iterations
 
 	}
 #endif
+}
+double standard_Deviation(double avg_X_Sqd, double avgX,double length )
+{
+	double std_dev = (avg_X_Sqd - pow(avgX,2)) / (length -1.0)
+
+	return sqrt(std_dev);
+}
+
+void error_Bars(vector<vector<vector<double> > > &results,int iterations)
+{
+
+	//using bootstrap algorithm to calcuate the error on the bars
+	double length = floor(0.8 * (double)iterations);
+
+	vector<double> sample(length,0);
+	
+
+
+
 
 }
+
+void autocorrelation_Time()
+{
+
+}
+
+
