@@ -7,73 +7,79 @@
 
 #include "stastics.h"
 
-double avgX(vector<vector<vector<double> > > &results,unsigned int iterations,unsigned int length)
+double avgX(vector<double> results)
 {	
 	double sum =0;
+	int length = results.size();
 
-	for(unsigned int i=0;i<length;i++)
+	for(int i=0;i<length;i++)
 	{
-		for(unsigned int j=0;j<iterations;j++)
-		{
-		sum += (results[j][i][0]);
-		}
-		results[0][i][1] = (sum/(double)iterations);
-		sum =0;
-
+		sum += results[i];
 	}
+
+	return sum/length;
 }
 
-void avg_X_Sqd(vector<vector<vector<double> > > &results,unsigned int iterations,unsigned int length)
+double avg_X_Sqd(vector<double> results)
 {	
 	double sum =0;
+	int length = results.size();
 
-	for(unsigned int i=0;i<length;i++)
+	for(int i=0;i<length;i++)
 	{
-		for(unsigned int j=0;j<iterations;j++)
-		{
-		sum += (results[j][i][0]*results[j][i][0]);
-		results[j][i][1] = (sum/(double)i);
-		}
-		sum =0;
-
+		sum += results[i]*results[i];
 	}
-#if 1
-	for(unsigned int i=0;i<length;i++)
-	{
-		for(unsigned int j=0;j<iterations;j++)
-		{
-		sum += (results[j][i][0]);
-		}
-		results[0][i][1] = (sum/(double)iterations);
-		sum =0;
 
-	}
-#endif
+	return sum/length;
 }
+
 double standard_Deviation(double avg_X_Sqd, double avgX,double length )
 {
-	double std_dev = (avg_X_Sqd - pow(avgX,2)) / (length -1.0)
+	double std_dev = (avg_X_Sqd - pow(avgX,2)) / (length -1.0);
 
 	return sqrt(std_dev);
 }
 
-void error_Bars(vector<vector<vector<double> > > &results,int iterations)
+double error_Bars(vector<double> results)
 {
 
 	//using bootstrap algorithm to calcuate the error on the bars
-	double length = floor(0.8 * (double)iterations);
+	//FIND A BETTER WAY TO DO THIS
 
-	vector<double> sample(length,0);
-	
+	double length =results.size() * 0.8,avgx,avgxx;
+	int len = (int)length,rand_No;
 
+	vector<double> sample(len,0);
+	//THIS COULD CAUSE SOME TROUBLE IN THE STATS
 
+	for(int i =0; i< (int)length ; i++)
+	{
+		rand_No = rand() % (int) results.size();
+		sample[i] = results[rand_No];
+	}
 
+	avgx = avgX(sample);
+	avgxx = avg_X_Sqd(sample);
+
+	return standard_Deviation(avgx,avgxx,(double)len);
 
 }
 
-void autocorrelation_Time()
+double autocorrelation_Time(vector<double> data,double avgx ,int k)
 {
+	double sum1=0,sum2=0;
+	unsigned int length = data.size();
+	for(unsigned int i = 0;i < length-k;i++)
+	{
+		sum1 += (data[i]-avgx) * (data[i+k] - avgx);
 
+	}
+	for(unsigned int i=0;i<length;i++)
+	{
+		sum2 += pow((data[i] - avgx),2);
+	}
+
+	return sum1/sum2;
 }
 
 

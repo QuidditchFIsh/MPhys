@@ -4,12 +4,12 @@
 #include <cmath>
 using namespace std;
 
-double avgX(vector<vector<vector<double> > > &results,unsigned int ,unsigned int );
+double avgX(vector<double> );
 
-void avg_X_Sqd(vector<vector<vector<double> > > &results,unsigned int ,unsigned int);
+double avg_X_Sqd(vector<double> );
 
 double standard_Deviation(double , double ,double  );
 
-void error_Bars();
+double error_Bars(vector<double> );
 
-void autocorrelation_Time();
+void autocorrelation_Time(vector<double> ,double ,double );
