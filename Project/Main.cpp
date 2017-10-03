@@ -22,11 +22,12 @@ int main(){
 	double t_step=0.05;
 
 	//Initalise the vector .	MAYBE IT WOULD BE QUICKER TO USE A MALLOC AND 1D ARRAY
-	vector<double> v2(length,0);
-	vector<vector<double> >lattice(iterations,v2);
+	vector<double> v2(iterations,0);
+	vector<vector<double> >lattice(length,v2);
 
 	//0-<q>,1-<q^2>,2-<error>
-	vector<double> stats_Data(3,0);
+	vector<double> v1(3,0);
+	vector<vector<double> >stats_Data(length,v1);
 
 	//create file to store the data into 
 
@@ -34,7 +35,7 @@ int main(){
 	output = fopen("HMC_Results.dat","w");
 
 	//begin each simulation at p=0 and q=0
-	printf("Started Simulatio with:\n %d Oscillators\n iterating %d times at a time step of %f\n",length,iterations,t_step);
+	printf("Started Simulatio with:\n %d Oscillators\n Iterating %d times at a time step of %f\n",length,iterations,t_step);
 	
 	t1=clock();
 	lattice_Evolution(t_step,iterations,length,lattice);
@@ -44,6 +45,15 @@ int main(){
 	printf("Simulation Completed in %f seconds\n",seconds);
 	printf("Begingin Stats Calculations\n");
 
+	//stats calculations go here
+
+	for(unsigned int i=0;i<length;i++)
+	{
+
+	}
+
+
+
 	t3=clock();
 	seconds =((float)t3-(float)t2)/(CLOCKS_PER_SEC);
 	printf("Statistics computation Completed in %f seconds\n",seconds);
@@ -52,9 +62,9 @@ int main(){
 
 		for(unsigned int j=0;j<length;j++)
 			{
-				//fprintf(output,"%d ",j);
+				//fprintf(output,"%d "j);
 				//fprintf(output,"%f ",lattice[i][j][0]);//p
-				fprintf(output,"%f, ",lattice[1999][j]);//q
+				fprintf(output,"%f , ",lattice[j][iterations-1]);//q
 				//fprintf(output,"%f \n",lattice[0][j][1]);//<x^2>
 				//fprintf(output,"%f\n",lattice[i][j][3]);
 			}

@@ -5,6 +5,8 @@
 		housed here and will be executed here. 
 */
 #include "Monte_carlo.h"
+#define flip 1
+
 
 void lattice_Evolution(double t_step,unsigned int iter ,unsigned int length,vector<vector<double> >&lattice)
 {
@@ -21,7 +23,7 @@ void lattice_Evolution(double t_step,unsigned int iter ,unsigned int length,vect
 	{
 		p=distribution(generator);
 		//printf("%f\n",p);
-		lattice[0][i]= hmcAlgorithm(t_step,p,lattice[0][i]);
+		lattice[i][0]= hmcAlgorithm(t_step,p,lattice[i][0]);
 		//printf("%f %f \n",p,lattice[0][i][1]);
 	}
 
@@ -33,7 +35,7 @@ void lattice_Evolution(double t_step,unsigned int iter ,unsigned int length,vect
 			//printf("%d %d \n",j,i);
 			p=distribution(generator);
 			//printf("%f\n",p);
-			lattice[j][i]= hmcAlgorithm(t_step,p,lattice[j-1][i]);
+			lattice[i][j]= hmcAlgorithm(t_step,p,lattice[i][j-1]);
 			//printf("%f %f \n",p,lattice[0][i][1]);
 		}
 	}
@@ -47,7 +49,7 @@ double hmcAlgorithm(double t_step,double p_rand,double q_old)
 
 	//iter is the number of monte carlo updates which will be perfomred. 
 		double q,p=0,p_old;
-		unsigned int steps=25;
+		unsigned int steps=15;
 
 		q = q_old;
 		p_old = p;
@@ -55,7 +57,7 @@ double hmcAlgorithm(double t_step,double p_rand,double q_old)
 
 
 //anharmonic algorithm 
-#if 0
+#if !flip
 		p = p_rand - (0.5 * t_step * (q + (4*q*q*q)));
 
 		for(unsigned int j=0;j<steps;j++)
@@ -69,7 +71,7 @@ double hmcAlgorithm(double t_step,double p_rand,double q_old)
 
 #endif
 //harmonic algorithm 
-#if 1
+#if flip
 		p = p_rand - (0.5 * t_step * q );
 
 		for(unsigned int j=0;j<steps;j++)
@@ -110,12 +112,12 @@ double hamiltonian(double p,double q){
 
 	//Set m=1;
 	//anharmonic
-#if 0
+#if !flip
 	H = (pow(p,2) * 0.5) + (pow(q,2)* 0.5) + pow(q,4);
 #endif
 
 	//harmonic
-#if 1
+#if flip
 	H = (pow(p,2) * 0.5) + (pow(q,2)* 0.5);
 #endif
 
