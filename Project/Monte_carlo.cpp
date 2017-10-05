@@ -11,38 +11,72 @@
 void lattice_Evolution(double t_step,unsigned int iter ,unsigned int length,vector<vector<double> >&lattice)
 {
 	//initalise the variables
-	double p=1;
+	double p=1,H_Old;
+	int acceptance =0;
 
 	//pick out new random P
 	default_random_engine generator;
  	normal_distribution<double> distribution(0.0,1.0);
 
-	//update the lattice
+ 	vector<double> v1(length,0);
+ 	vector<vector<double> >store_State(2,v1);
+ 	
+ 	for(int i=0;i<length;i++)
+ 	{
+ 		p=distribution(generator);
+		store_State[i][0]=lattice[i][j];
+	}
 
+	//update the lattice
+	H_Old = Hamiltonian();
 	for(unsigned int i=0;i<length;i++)
 	{
-		p=distribution(generator);
-		//printf("%f\n",p);
-		lattice[i][0]= hmcAlgorithm(t_step,p,lattice[i][0]);
-		//printf("%f %f \n",p,lattice[0][i][1]);
-	}
 
-#if 1
-	for(unsigned int j=1;j<iter;j++)
+		lattice[i][j]= hmcAlgorithm(t_step,p,lattice[i][j]);
+
+	}
+	H_New = Hamiltonian();
+	if(exp(H_Old - H_New) < 1 )
 	{
-		for(unsigned int i=0;i<length;i++)
+			//accept the new configuration
+		acceptance++;
+
+	}
+	else
+	{
+			//Keep the old one.
+		for(unsigned int k =0;k<length;k++)
 		{
-			//printf("%d %d \n",j,i);
-			p=distribution(generator);
-			//printf("%f\n",p);
-			lattice[i][j]= hmcAlgorithm(t_step,p,lattice[i][j-1]);
-			//printf("%f %f \n",p,lattice[0][i][1]);
+			lattics[k][j] = store_State[k][0];
 		}
 	}
-#endif
 
+	for(unsigned int j=1;j<iter;j++)
+	{
+		H_Old = Hamiltonian();
+		for(unsigned int i=0;i<length;i++)
+		{
+			p=distribution(generator);
+			store_State[i][0]=lattice[i][j-1];
 
+			lattice[i][j]= hmcAlgorithm(t_step,p,lattice[i][j-1]);
+
+		}
+		H_New = Hamiltonian();
+		if(exp(H_Old - H_New) < 1 )
+		{
+			//accept the new configuration
+			acceptance++;
+
+		}
+		else
+		{
+			//Keep the old one.
+			lattics[k][j] = store_State[k];
+		}
+	}
 }
+
 double hmcAlgorithm(double t_step,double p_rand,double q_old)
 {
 	// HMC algorithm executed here
@@ -51,8 +85,6 @@ double hmcAlgorithm(double t_step,double p_rand,double q_old)
 		double q,p=0,p_old;
 		unsigned int steps=15;
 
-		q = q_old;
-		p_old = p;
 
 
 
@@ -84,26 +116,9 @@ double hmcAlgorithm(double t_step,double p_rand,double q_old)
 		p = p - (0.5 * t_step * q);
 
 #endif
+return q;
 
-
-		//printf("%f\n",exp(hamiltonian(p,q)) - exp(hamiltonian(p_new,q_new)));
-
-		if(1 < exp(-hamiltonian(p_old,q_old)) +(hamiltonian(p,q)))
-		{
-			//accept the new p and q
-			//if rjectted then the p and q stay the same.
-			//printf("accept %f\n",q);
-			return q;
-
-		}
-		else
-		{
-			//printf("reject %f\n",q_old);
-			return q_old;
-		}
-		
-	}
-
+}
 
 double hamiltonian(double p,double q){
 	//calculate the Hamiltonian of the system
