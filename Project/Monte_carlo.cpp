@@ -78,6 +78,7 @@ void lattice_Evolution(double t_step,unsigned int iter ,unsigned int length,vect
 		}
 	}
 }
+
 void latticd_Evolution(unsigned int length,unsigned int iterations)
 {
 	//rewriting algorithm!!!
@@ -129,7 +130,7 @@ void latticd_Evolution(unsigned int length,unsigned int iterations)
  		{
  			//initalise the p's for the state. The first q's will be 0 and evolved randomly by the HMC algorithm.
  			saved_State[i][1] = distribution(generator);
- 			saved_State[i][j] = lattice[][];
+ 			saved_State[i][j] = lattice[i][j];
  		}	
 
  		H_Old = Hamiltonian();
@@ -207,12 +208,12 @@ double hamiltonian(vector<double> q,vector<double> p,unsigned int length,unsigne
 	{
 		//anharmonic
 		#if !flip
-			H = (pow((q[iter][i] + q[iter][i+1]),2))/(pow(t_step),2) + (pow(p[iter][i],2) * 0.5) + (pow(q[iter][i],2)* 0.5) + pow(q[iter][i],4);
+			H += (pow((q[iter][i] + q[iter][i+1]),2))/(pow(t_step),2) + (pow(p[iter][i],2) * 0.5) + (pow(q[iter][i],2)* 0.5) + pow(q[iter][i],4);
 		#endif
 
 		//harmonic
 		#if flip
-			H = (pow((q[iter][i] + q[iter][i+1]),2))/(pow(t_step),2) + (pow(p[iter][i],2) * 0.5) + (pow(q[iter][i],2)* 0.5);
+			H += (pow((q[iter][i] + q[iter][i+1]),2))/(pow(t_step),2) + (pow(p[iter][i],2) * 0.5) + (pow(q[iter][i],2)* 0.5);
 		#endif
 	}
 	return H ;
