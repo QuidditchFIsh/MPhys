@@ -20,19 +20,21 @@ void lattice_Evolution(double t_step,unsigned int iter ,unsigned int length,vect
 
  	vector<double> v1(length,0);
  	vector<vector<double> >store_State(2,v1);
- 	
+
  	for(int i=0;i<length;i++)
  	{
- 		p=distribution(generator);
-		store_State[i][0]=lattice[i][j];
+ 		//storeing the q's and generating p's
+		store_State[i][0]=lattice[i][0];
+		store_State[i][1]=distribution(generator);
 	}
 
 	//update the lattice
 	H_Old = Hamiltonian();
+
 	for(unsigned int i=0;i<length;i++)
 	{
 
-		lattice[i][j]= hmcAlgorithm(t_step,p,lattice[i][j]);
+		lattice[i][0]= hmcAlgorithm(t_step,p,lattice[i][0]);
 
 	}
 	H_New = Hamiltonian();
@@ -76,7 +78,11 @@ void lattice_Evolution(double t_step,unsigned int iter ,unsigned int length,vect
 		}
 	}
 }
-
+void latticd_Evolution()
+{
+	//rewriting algorithm!!!
+	
+}
 double hmcAlgorithm(double t_step,double p_rand,double q_old)
 {
 	// HMC algorithm executed here
