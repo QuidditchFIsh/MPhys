@@ -8,162 +8,75 @@
 #define flip 1
 
 
-void lattice_Evolution(double t_step,unsigned int iter ,unsigned int length,vector<vector<double> >&lattice)
+void latticd_Evolution(vector<vector<double> > &results,unsigned int length,double t_step,unsigned int iterations)
 {
-	//initalise the variables
-	double p=1,H_Old;
-	int acceptance =0;
+	//Create two arrays to store the tempory data in. The results will be stored in the results array passed in and recrorded every 5
+	// p-0,q-1
+	vector<double> v1 (2,0);
+	vector<vector<double> > old_State(length,v1);
 
-	//pick out new random P
+	vector<double> v2 (2,0);
+	vector<vector<double> > new_State(length,v2);
+
+	unsigned int acceptance =0;
+
+	double H_new=0,H_old=0;
+
+
+	//initalise the random number generator as a gausian with mean 0 and std 1
 	default_random_engine generator;
  	normal_distribution<double> distribution(0.0,1.0);
 
- 	vector<double> v1(length,0);
- 	vector<vector<double> >store_State(2,v1);
+ 	//PERHAPS LOOK AT HOW EFFICENT IT WOULD BE TO PUT IF STATEMENTS INTO THE FOR LOOP TO IRADICATE THIS 
 
- 	for(int i=0;i<length;i++)
- 	{
- 		//storeing the q's and generating p's
-		store_State[i][0]=lattice[i][0];
-		store_State[i][1]=distribution(generator);
-	}
 
-	//update the lattice
-	H_Old = Hamiltonian();
-
-	for(unsigned int i=0;i<length;i++)
-	{
-
-		lattice[i][0]= hmcAlgorithm(t_step,p,lattice[i][0]);
-
-	}
-	H_New = Hamiltonian();
-	if(exp(H_Old - H_New) < 1 )
-	{
-			//accept the new configuration
-		acceptance++;
-
-	}
-	else
-	{
-			//Keep the old one.
-		for(unsigned int k =0;k<length;k++)
-		{
-			lattics[k][j] = store_State[k][0];
-		}
-	}
-
-	for(unsigned int j=1;j<iter;j++)
-	{
-		H_Old = Hamiltonian();
-		for(unsigned int i=0;i<length;i++)
-		{
-			p=distribution(generator);
-			store_State[i][0]=lattice[i][j-1];
-
-			lattice[i][j]= hmcAlgorithm(t_step,p,lattice[i][j-1]);
-
-		}
-		H_New = Hamiltonian();
-		if(exp(H_Old - H_New) < 1 )
-		{
-			//accept the new configuration
-			acceptance++;
-
-		}
-		else
-		{
-			//Keep the old one.
-			lattics[k][j] = store_State[k];
-		}
-	}
-}
-
-void latticd_Evolution(unsigned int length,unsigned int iterations)
-{
-	//rewriting algorithm!!!
-	//vctor to hold the saved p's and q's. 0-q,1-p
-	vector<double> v1(length,0);
-	vector<vector<double> >saved_State(2,v1);
-
-	double H_Old=0,H_New=0;
-	int acceptance=0;
-	//Random Number generator.
-	//pick out new random P
-	default_random_engine generator;
- 	normal_distribution<double> distribution(0.0,1.0);
-
- 	//store the first p's and q's
+ 	////////////////MAY NOT NEED THIS//////////////////////////
  	for(unsigned int i = 0; i < length;i++)
  	{
- 		//initalise the p's for the state. The first q's will be 0 and evolved randomly by the HMC algorithm.
- 		saved_State[i][1] = distribution(generator);
- 		saved_State[i][0] = 0;
+ 		//create an array of random numbers 
+ 		old_State[i][0] = 0;
+ 		old_State[i][1] = 0;
  	}
-
- 	H_Old = Hamiltonian();
- 	for(unsigned int i = 0; i < length ; i++)
+ 	///////////////////////////////////////////////////////////
+ 	H_old =0;
+ 	//main loop
+ 	for(unsigned int i = 0; i < iterations;i++)
  	{
- 		lattice[i][0] = hmc();
- 	}
- 	H_New = Hamiltonian();
-
- 	//Now accept or reject the new state with Metroplis update 
- 	if(exp(H_Old - H_New) < 1)
- 	{
- 		//accept the state 
- 		acceptance++;
- 	}
- 	else
- 	{
- 		//reject the state and reset the state back to the old one
- 		for(unsigned int i = 0; i < length; i++)
+ 		//create new array of random p's 
+ 		for(unsigned int j = 0;j < length;j++)
  		{
- 			//set the lattice to the old state
- 			lattics[j][i] = saved_State[i][0]; 
+ 			new_State[j][0] = distribution(generator);
+ 			hmcAlgorithm(t_step,new_State[j][0],old_State[j][1],new_State[j]);
  		}
- 	}
+ 
+ 		H_new= hamiltonian(new_State,length,t_step);
 
- 	for(unsigned int i = 1; i < iterations; i++)
- 	{
- 		for(unsigned int j = 0; j < length;j++)
+ 		if(exp(H_old - H_new) < 1)
  		{
- 			//initalise the p's for the state. The first q's will be 0 and evolved randomly by the HMC algorithm.
- 			saved_State[i][1] = distribution(generator);
- 			saved_State[i][j] = lattice[i][j];
- 		}	
-
- 		H_Old = Hamiltonian();
- 		for(unsigned int i = 0; i < length ; i++)
- 		{
- 			lattice[i][j]= hmcAlgorithm(t_step,p,lattice[i][j-1]);	
- 		}
-
- 		H_New = Hamiltonian();
-
- 		//Now accept or reject the new state with Metroplis update 
- 		if(exp(H_Old - H_New) < 1)
- 		{
- 			//accept the state 
  			acceptance++;
- 		}
- 		else
- 		{
- 			//reject the state and reset the state back to the old one
- 			for(unsigned int i = 0; i < length; i++)
+ 			for(unsigned int k=0;k<length;k++)
  			{
- 				//set the lattice to the old state
- 				lattice[j][i] = saved_State[i][0];
+ 				old_State[k][1] = new_State[k][1];
  			}
+ 			H_old = H_new;
  		}
-	}	
+ 		if(i % 5 == 0)
+ 		{
+ 			//copy results into results array
+ 		}
+ 	}
+
+
+
+
+
 }
-double hmcAlgorithm(double t_step,double p_rand,double q_old)
+void hmcAlgorithm(double t_step,double p_rand,double q_old,vector<double> &state)
 {
 	// HMC algorithm for a single oscillator
 
 	//iter is the number of monte carlo updates which will be perfomred. 
-		double q,p=0,p_old;
+		double q,p=0;
 		unsigned int steps=15;
 	//anharmonic algorithm 
 #if !flip
@@ -193,11 +106,12 @@ double hmcAlgorithm(double t_step,double p_rand,double q_old)
 		p = p - (0.5 * t_step * q);
 
 #endif
-return q;
-
+		state[0] = p;
+		state[1] = q;
 }
 
-double hamiltonian(vector<double> q,vector<double> p,unsigned int length,unsigned int iter,double t_step){
+double hamiltonian(vector<vector<double> > state,unsigned int length,double t_step)
+{
 	//calculate the Hamiltonian of the whole lattice
 
 	double H=0;
@@ -208,16 +122,17 @@ double hamiltonian(vector<double> q,vector<double> p,unsigned int length,unsigne
 	{
 		//anharmonic
 		#if !flip
-			H += (pow((q[iter][i] + q[iter][i+1]),2))/(pow(t_step),2) + (pow(p[iter][i],2) * 0.5) + (pow(q[iter][i],2)* 0.5) + pow(q[iter][i],4);
+			H += (pow((state[i][1] + state[(i+1) % length][1],2)))/(pow(t_step),2) + (pow(state[i][0],2) * 0.5) + (pow(state[i][1],2)* 0.5) + pow(qstate[i][1],4);
 		#endif
 
 		//harmonic
 		#if flip
-			H += (pow((q[iter][i] + q[iter][i+1]),2))/(pow(t_step),2) + (pow(p[iter][i],2) * 0.5) + (pow(q[iter][i],2)* 0.5);
+			H += (pow((state[i][1] + state[(i+1) % length][1],2)))/(pow(t_step),2) + (pow(state[i][0],2) * 0.5) + (pow(state[i][1],2)* 0.5);
 		#endif
 	}
 	return H ;
 }
+
 
 
 
