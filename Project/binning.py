@@ -1,17 +1,19 @@
 from numpy import *
 import numpy as np
-import random
 from matplotlib import pyplot as plt
+from matplotlib.axes import Axes
 
 #data =loadtxt("HMC_Results.dat", unpack=True)
-myarray = np.fromfile('HMC_Results.dat')
+myarray = np.loadtxt('HMC_Results.dat',delimiter = ',',unpack = True)
+
+#print(myarray)
 
 
-
-
-
-plt.hist(data2, bins=75)
+out = plt.hist(myarray, bins=50,normed =1)
 axes = plt.gca()
-#axes.set_xlim([-0.5,0.5])
+plt.xlabel('x')
+plt.ylabel('|ψ|^2')
+plt.title('Wave Function for a Harmonic Oscillator')
+print(sum(out[0][1:49]*diff(out[1][1:50])))
 plt.show()
 

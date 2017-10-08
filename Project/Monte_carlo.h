@@ -9,8 +9,8 @@
 
 using namespace std;
 
-void lattice_Evolution(double ,unsigned int ,unsigned int ,vector<vector<double> > &);
+void lattice_Evolution(vector<vector<double> > &,unsigned int ,double t_step,unsigned int );
 
-double hmcAlgorithm(double,double ,double);
+void hmcAlgorithm(double ,double ,double ,vector<double> &);
 
-double hamiltonian(double ,double );
+double hamiltonian(vector<vector<double> > ,unsigned int ,double );

@@ -20,18 +20,40 @@ double avgX(vector<double> results)
 	return sum/length;
 }
 
-double avg_X_Sqd(vector<double> results)
+double moving_avg_X_Sqd(vector<vector<double> > results,unsigned int iterations,unsigned int length)
 {	
-	double sum =0;
-	int length = results.size();
+	
+	FILE * output1;
+	output1 = fopen("HMC_Results_x_2","w");
 
-	for(int i=0;i<length;i++)
+	double sum =0;
+
+	for(unsigned int i=0;i<1000;i++)
 	{
-		sum += results[i]*results[i];
+		for(unsigned int j=0;j<i;j++)
+		{
+			sum += results[j][2]*results[j][2];
+		}
+		fprintf(output1,"%d %f \n ",i,sum/(double) i);
+		sum=0;
 	}
 
 	return sum/length;
 }
+double avg_X_Sqd(vector<double> results)
+{	
+
+	double sum =0;
+	unsigned int length = results.size();
+
+		for(unsigned int j=0;j<length;j++)
+		{
+			sum += results[j]*results[j];
+		}
+
+	return sum/(double)length;
+}
+
 
 double standard_Deviation(double avg_X_Sqd, double avgX,double length )
 {
@@ -49,13 +71,13 @@ double error_Bars(vector<double> results)
 	double length =results.size() * 0.8,avgx,avgxx;
 	int len = (int)length,rand_No;
 
-	vector<double> sample(len,0);
+	vector<double> sample(1,0);
 	//THIS COULD CAUSE SOME TROUBLE IN THE STATS
 
-	for(int i =0; i< (int)length ; i++)
+	for(int i =0; i< len ; i++)
 	{
-		rand_No = rand() % (int) results.size();
-		sample[i] = results[rand_No];
+		rand_No = rand() % results.size();
+		sample.insert(results[rand_No]);
 	}
 
 	avgx = avgX(sample);

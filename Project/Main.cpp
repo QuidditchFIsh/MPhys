@@ -17,13 +17,14 @@ int main(){
 	//Number of iterations of the HMC algorithm to be performed, and number of times the algoirthm is 
 	//going to loop
 
-	unsigned int iterations = 2000,length = 10000;
+	unsigned int iterations = 10000,length = 5000;
+	//unsigned int iterations = 20,length = 10;
 
-	double t_step=0.05;
+	double t_step=0.1;
 
 	//Initalise the vector .	MAYBE IT WOULD BE QUICKER TO USE A MALLOC AND 1D ARRAY
-	vector<double> v2(iterations,0);
-	vector<vector<double> >lattice(length,v2);
+	vector<double> v2(length,0);
+	vector<vector<double> >lattice(iterations,v2);
 
 	//0-<q>,1-<q^2>,2-<error>
 	vector<double> v1(3,0);
@@ -34,11 +35,12 @@ int main(){
 	FILE * output;
 	output = fopen("HMC_Results.dat","w");
 
+
 	//begin each simulation at p=0 and q=0
 	printf("Started Simulatio with:\n %d Oscillators\n Iterating %d times at a time step of %f\n",length,iterations,t_step);
 	
 	t1=clock();
-	lattice_Evolution(t_step,iterations,length,lattice);
+	lattice_Evolution(lattice,length,t_step,iterations);
 	t2=clock();
 	
 	float seconds =((float)t2-(float)t1)/(CLOCKS_PER_SEC);
@@ -46,11 +48,8 @@ int main(){
 	printf("Begingin Stats Calculations\n");
 
 	//stats calculations go here
+	//moving_avg_X_Sqd(lattice,iterations,length);
 
-	for(unsigned int i=0;i<length;i++)
-	{
-
-	}
 
 
 
@@ -60,14 +59,18 @@ int main(){
 
 	#if 1
 
-		for(unsigned int j=0;j<length;j++)
-			{
+		//for(unsigned int j=0;j<iterations/5;j++)
+			//{
+				for(unsigned int i=0;i<iterations/5;i++)
+				{
 				//fprintf(output,"%d "j);
 				//fprintf(output,"%f ",lattice[i][j][0]);//p
-				fprintf(output,"%f , ",lattice[j][iterations-1]);//q
+				fprintf(output,"%f\n",lattice[1999][i]);//q
 				//fprintf(output,"%f \n",lattice[0][j][1]);//<x^2>
 				//fprintf(output,"%f\n",lattice[i][j][3]);
-			}
+				}
+				//fprintf(output,"\n");
+			//}
 	#endif
 
 	//after all of the simulation sare completed then perform all of the stastical analysis on it
