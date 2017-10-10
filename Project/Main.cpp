@@ -11,6 +11,8 @@
 
 int main(){
 
+	fftw_complex *in, *out;
+
 	printf("Beginning Simulation Initalising System\n");
 	clock_t t1,t2,t3;
 
@@ -48,7 +50,8 @@ int main(){
 	printf("Begingin Stats Calculations\n");
 
 	//stats calculations go here
-	//moving_avg_X_Sqd(lattice,iterations,length);
+	moving_avg_X_Sqd(lattice,stats_Data,iterations,length);
+	autocorrelation_Time(stats_Data,iterations,length);
 
 
 
