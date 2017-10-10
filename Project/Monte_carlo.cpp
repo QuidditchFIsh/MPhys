@@ -83,7 +83,7 @@ void lattice_Evolution(vector<vector<double> > &results,unsigned int length,doub
  			result_no++;
  		}
  	}
- 	printf("%f %d\n",(double)acceptance/iterations,acceptance);
+ 	printf("Acceptance rate is :%f %d/%d\n",(double)acceptance/iterations,acceptance,iterations);
 
 
 
