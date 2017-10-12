@@ -4,12 +4,12 @@
 	Description: The script is where the HMC algorithm will take place. The intergration methods will be 
 		housed here and will be executed here. 
 */
-#include "Monte_carlo.h"
-#define Oscillator_flip 0
+#include "Fourier_Monte_Carlo.h"
+#define Oscillator_flip 1
 //1 = harmonic oscillator, 0 = anharmonic oscillator
 
 
-void lattice_Evolution(vector<vector<double> > &results,unsigned int length,double t_step,unsigned int iterations)
+void F_lattice_Evolution(vector<vector<double> > &results,unsigned int length,double t_step,unsigned int iterations)
 {
 	//Create two arrays to store the tempory data in. The results will be stored in the results array passed in and recrorded every 5
 	// p-0,q-1
@@ -50,15 +50,15 @@ void lattice_Evolution(vector<vector<double> > &results,unsigned int length,doub
  			new_State[j][0] = distribution(generator);
  		}
 
- 		 H_old =hamiltonian(new_State,length,t_step);
+ 		 H_old =F_hamiltonian(new_State,length,t_step);
  		
  		for(unsigned int j = 0;j < length;j++)
  		{
  			//printf("%f \n",new_State[j][0]);
- 			hmcAlgorithm(t_step,new_State[j][0],old_State[(j-1) % length][1],old_State[j][1],old_State[(j+1) % length][1],new_State[j]);
+ 			F_hmcAlgorithm(t_step,new_State[j][0],old_State[(j-1) % length][1],old_State[j][1],old_State[(j+1) % length][1],new_State[j]);
  		}
  
- 		H_new= hamiltonian(new_State,length,t_step);
+ 		H_new= F_hamiltonian(new_State,length,t_step);
  		//printf("%f\n",H_old-H_new);
 
  		if(exp(H_old - H_new) < 1)
@@ -90,7 +90,7 @@ void lattice_Evolution(vector<vector<double> > &results,unsigned int length,doub
 
 
 }
-void hmcAlgorithm(double t_step,double p_rand,double q_minus,double q,double q_plus,vector<double> &state)
+void F_hmcAlgorithm(double t_step,double p_rand,double q_minus,double q,double q_plus,vector<double> &state)
 {
 	// HMC algorithm for a single oscillator
 
@@ -129,7 +129,7 @@ void hmcAlgorithm(double t_step,double p_rand,double q_minus,double q,double q_p
 		state[1] = q;
 }
 
-double hamiltonian(vector<vector<double> > state,unsigned int length,double t_step)
+double F_hamiltonian(vector<vector<double> > state,unsigned int length,double t_step)
 {
 	//calculate the Hamiltonian of the whole lattice
 

@@ -28,13 +28,15 @@ void moving_avg_X_Sqd(vector<vector<double> > results,vector<vector<double> > &s
 
 	double sum =0;
 
-	for(unsigned int i=0;i<1000;i++)
+	for(unsigned int i=0;i<iterations/5;i++)
 	{
 		for(unsigned int j=0;j<i;j++)
 		{
 			sum += results[j][2]*results[j][2];
+
 		}
 		fprintf(output1,"%d %f \n ",i,sum/(double) i);
+		//printf("%d \n",i);
 		stats_data[i][1]=sum/(double) i;
 		sum=0;
 
@@ -124,7 +126,7 @@ void autocorrelation_Time(vector<vector<double> > data,unsigned int iterations,u
 		sum1=0;
 	}
 
-	for(unsigned int i=0;i<500;i++)
+	for(unsigned int i=0;i<iterations/5;i++)
 	{
 		//fprintf(output2,"%f\n",ACT[i]);
 		fprintf(output2,"%d %f\n",i,ACT[i]);
