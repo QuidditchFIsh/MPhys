@@ -5,7 +5,7 @@
 		housed here and will be executed here. 
 */
 #include "Monte_carlo.h"
-#define flip 0
+#define Oscillator_flip 0
 //1 = harmonic oscillator, 0 = anharmonic oscillator
 
 
@@ -55,7 +55,7 @@ void lattice_Evolution(vector<vector<double> > &results,unsigned int length,doub
  		for(unsigned int j = 0;j < length;j++)
  		{
  			//printf("%f \n",new_State[j][0]);
- 			hmcAlgorithm(t_step,new_State[j][0],old_State[j][1],new_State[j]);
+ 			hmcAlgorithm(t_step,new_State[j][0],old_State[(j-1) % length][1],old_State[j][1],old_State[(j+1) % length][1],new_State[j]);
  		}
  
  		H_new= hamiltonian(new_State,length,t_step);
@@ -83,43 +83,43 @@ void lattice_Evolution(vector<vector<double> > &results,unsigned int length,doub
  			result_no++;
  		}
  	}
- 	printf("%f %d\n",(double)acceptance/iterations,acceptance);
+ 	printf("Acceptance rate is :%f %d/%d\n",(double)acceptance/iterations,acceptance,iterations);
 
 
 
 
 
 }
-void hmcAlgorithm(double t_step,double p_rand,double q_old,vector<double> &state)
+void hmcAlgorithm(double t_step,double p_rand,double q_minus,double q,double q_plus,vector<double> &state)
 {
 	// HMC algorithm for a single oscillator
 
 	//iter is the number of monte carlo updates which will be perfomred. 
-		double q=0,p=0;
+		double p=0;
 		unsigned int steps=15;
 	//anharmonic algorithm 
-#if !flip
+#if !Oscillator_flip
 		p = p_rand - (0.5 * t_step * (q + (4*q*q*q)));
 
 		for(unsigned int j=0;j<steps;j++)
 		{
 			q = q + (t_step * p);
 
-			if(j != steps-1) {p = p - (0.5 * t_step * (q + (4*q*q*q)));}
+			if(j != steps-1) {p = p - (0.5 * t_step * (q_minus+q_plus-(2*q) + 2*q+ (4*q*q*q)));}
 		}
 
 		p = p - (0.5 * t_step * (q + (4*q*q*q)));
 
 #endif
 //harmonic algorithm 
-#if flip
+#if Oscillator_flip
 		p = p_rand - (0.5 * t_step * q );
 
 		for(unsigned int j=0;j<steps;j++)
 		{
 			q = q + (t_step * p);
 
-			if(j != steps-1) {p = p - (0.5 * t_step * q);}
+			if(j != steps-1) {p = p - (0.5 * t_step * (q_minus+q_plus-(2*q))* 2*q);}
 		}
 
 		p = p - (0.5 * t_step * q);
@@ -140,13 +140,13 @@ double hamiltonian(vector<vector<double> > state,unsigned int length,double t_st
 	for(unsigned int i = 0;i < length;i++)
 	{
 		//anharmonic
-		#if !flip
+		#if !Oscillator_flip
 
 			H += (pow((-state[i][1] + state[(i+1) % length][1]),2))/(0.5*pow(t_step,2)) + (pow(state[i][0],2) * 0.5) + (pow(state[i][1],2)* 0.5) + (pow(state[i][1],4));
 		#endif
 
 		//harmonic
-		#if flip
+		#if Oscillator_flip
 			H += (pow((-state[i][1] + state[(i+1) % length][1]),2))/(0.5*pow(t_step,2)) + (pow(state[i][0],2) * 0.5) + (pow(state[i][1],2)* 0.5);
 		#endif
 	}

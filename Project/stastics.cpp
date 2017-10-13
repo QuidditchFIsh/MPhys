@@ -20,7 +20,7 @@ double avgX(vector<double> results)
 	return sum/length;
 }
 
-double moving_avg_X_Sqd(vector<vector<double> > results,unsigned int iterations,unsigned int length)
+void moving_avg_X_Sqd(vector<vector<double> > results,vector<vector<double> > &stats_data,unsigned int iterations,unsigned int length)
 {	
 	
 	FILE * output1;
@@ -28,17 +28,21 @@ double moving_avg_X_Sqd(vector<vector<double> > results,unsigned int iterations,
 
 	double sum =0;
 
-	for(unsigned int i=0;i<1000;i++)
+	for(unsigned int i=0;i<iterations/5;i++)
 	{
 		for(unsigned int j=0;j<i;j++)
 		{
 			sum += results[j][2]*results[j][2];
+
 		}
 		fprintf(output1,"%d %f \n ",i,sum/(double) i);
+		//printf("%d \n",i);
+		stats_data[i][1]=sum/(double) i;
 		sum=0;
+
 	}
 
-	return sum/length;
+	//return sum/length;
 }
 double avg_X_Sqd(vector<double> results)
 {	
@@ -81,17 +85,54 @@ double error_Bars(vector<double> results)
 	}
 
 	avgx = avgX(sample);
-	avgxx = avg_X_Sqd(sample);
+	//avgxx = avg_X_Sqd(sample);
 
 	return standard_Deviation(avgx,avgxx,(double)len);
 
 }
 
-double autocorrelation_Time(vector<vector<double> > data,double avgx ,int k)
-{
-	double sum1=0,sum2=0;
-	double avgx = avgX(data);
 
+void autocorrelation_Time(vector<vector<double> > data,unsigned int iterations,unsigned int length)
+{
+
+	FILE * output2;
+	output2 = fopen("HMC_Results_ACT","w");
+
+	vector<double> stats(iterations/5,0);
+
+	vector<double> ACT(iterations/5,0);
+
+	double sum1=0,sum2=0;
+
+
+	for(unsigned int i=1;i<iterations/5;i++)
+	{
+		stats[i-1] = data[i][1];
+		//printf("%f\n",stats[i]);
+	}
+
+	double avgx2 = avgX(stats),x2_0 = stats[0];
+
+	for(unsigned int i=0;i<iterations/5;i++)
+	{
+		sum2 += (stats[i]-avgx2)*(stats[i]-avgx2);
+	}
+	//printf("%f %f %f\n",sum2,x2_0,avgx2);
+	for(unsigned int i=0;i<iterations/5;i++)
+	{
+		for(unsigned int j=i+1;j<iterations/5-i;j++)
+		{
+			sum1 += (stats[j]-avgx2)*(stats[j+i]-avgx2);
+		}
+		ACT[i]=sum1/sum2;
+		sum1=0;
+	}
+
+	for(unsigned int i=0;i<iterations/5;i++)
+	{
+		//fprintf(output2,"%f\n",ACT[i]);
+		fprintf(output2,"%d %f\n",i,ACT[i]);
+	}
 
 }
 

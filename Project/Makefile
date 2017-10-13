@@ -1,13 +1,14 @@
 CC   = gcc-
 CXX  = g++
 
-CFLAGS = -std=c++11 -Wall
+CFLAGS = -std=c++11 -Wall -lfftw3 -lm
+
 NVCCFLAGS = -std=c++11
 LD_FLAGS =-std=c++11
 
 EXEC = HMC
 
-SRC_CPP = Main.cpp Monte_carlo.cpp stastics.cpp
+SRC_CPP = Main.cpp Monte_carlo.cpp stastics.cpp Fourier_Monte_Carlo.cpp
 
 OBJS_CPP = $(SRC_CPP:.cpp=.o)
 
