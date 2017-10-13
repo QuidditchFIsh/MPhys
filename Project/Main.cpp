@@ -26,8 +26,8 @@ int main(){
 	vector<double> v2(length,0);
 	vector<vector<double> >lattice(iterations,v2);
 
-	//0-<q>,1-<q^2>,2-<error>
-	vector<double> v1(3,0);
+	//0-<q>,1-<q^2>,2-<error>,3-autocorrelation
+	vector<double> v1(4,0);
 	vector<vector<double> >stats_Data(length,v1);
 
 	//create file to store the data into 

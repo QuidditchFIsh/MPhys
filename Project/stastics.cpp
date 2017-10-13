@@ -77,7 +77,7 @@ double error_Bars(vector<double> results)
 	for(int i =0; i< len ; i++)
 	{
 		rand_No = rand() % results.size();
-		sample.insert(results[rand_No]);
+		//sample.insert(results[rand_No]);
 	}
 
 	avgx = avgX(sample);
@@ -87,21 +87,12 @@ double error_Bars(vector<double> results)
 
 }
 
-double autocorrelation_Time(vector<double> data,double avgx ,int k)
+double autocorrelation_Time(vector<vector<double> > data,double avgx ,int k)
 {
 	double sum1=0,sum2=0;
-	unsigned int length = data.size();
-	for(unsigned int i = 0;i < length-k;i++)
-	{
-		sum1 += (data[i]-avgx) * (data[i+k] - avgx);
+	double avgx = avgX(data);
 
-	}
-	for(unsigned int i=0;i<length;i++)
-	{
-		sum2 += pow((data[i] - avgx),2);
-	}
 
-	return sum1/sum2;
 }
 
 
