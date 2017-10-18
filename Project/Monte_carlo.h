@@ -6,11 +6,14 @@
 #include <ctime>
 #include <vector>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
-void lattice_Evolution(vector<vector<double> > &,unsigned int ,double t_step,unsigned int );
+void lattice_Evolution(vector<vector<double> > &,unsigned int ,double ,unsigned int );
 
-void hmcAlgorithm(double ,double ,double ,double ,double ,vector<double> &);
+void hmcAlgorithm(unsigned int ,double ,vector<vector<double> > &,vector<vector<double> > & );
 
-double hamiltonian(vector<vector<double> > ,unsigned int ,double );
+double hamiltonian(double ,double ,double ,double );
+
+double lattice_Hamiltonian(vector<vector<double> > ,unsigned int ,double );

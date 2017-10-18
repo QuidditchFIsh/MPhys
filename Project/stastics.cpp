@@ -27,16 +27,18 @@ void moving_avg_X_Sqd(vector<vector<double> > results,vector<vector<double> > &s
 	output1 = fopen("HMC_Results_x_2","w");
 
 	double sum =0;
-
-	for(unsigned int i=0;i<iterations/5;i++)
+	printf("%d %d\n",results.size(),results[0].size());
+	printf("%d\n",iterations/5);
+	for(unsigned int i=1;i<1000;i++)
 	{
-		for(unsigned int j=0;j<i;j++)
+		for(unsigned int j=1;j < i;j++)
 		{
-			sum += results[j][2]*results[j][2];
+			sum += results[j][0]*results[j][0];
+			//printf("%d %d\n",i,j);
 
 		}
 		fprintf(output1,"%d %f \n ",i,sum/(double) i);
-		//printf("%d \n",i);
+		//printf("%f \n",sum/(double) i);
 		stats_data[i][1]=sum/(double) i;
 		sum=0;
 

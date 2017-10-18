@@ -20,10 +20,10 @@ int main(){
 	//Number of iterations of the HMC algorithm to be performed, and number of times the algoirthm is 
 	//going to loop
 
-	unsigned int iterations = 20000,length = 20000;
+	unsigned int iterations = 10000,length = 1000;
 	//unsigned int iterations = 20,length = 10;
 
-	double t_step=0.05;
+	double t_step=0.1;
 
 	//Initalise the vector .	MAYBE IT WOULD BE QUICKER TO USE A MALLOC AND 1D ARRAY
 	vector<double> v2(length,0);
@@ -56,7 +56,7 @@ int main(){
 	printf("Begingin Stats Calculations\n");
 
 	//stats calculations go here
-	printf("welp");
+//	printf("welp");
 	//for(unsigned int i=0;i<iterations/5;i++)
 	//{
 		//stats_Data[i][1]=avg_X_Sqd(lattice[i]);
@@ -65,7 +65,7 @@ int main(){
 	//}
 	//moving_avg_X_Sqd(lattice,stats_Data,iterations,length);
 	//autocorrelation_Time(stats_Data,iterations,length);
-	printf("welp");
+	//printf("welp");
 
 
 
@@ -77,7 +77,7 @@ int main(){
 
 		//for(unsigned int j=0;j<iterations/5;j++)
 			//{
-				for(unsigned int i=0;i<iterations/5;i++)
+				for(unsigned int i=0;i<length;i++)
 				{
 				//fprintf(output,"%d "j);
 				//fprintf(output,"%f ",lattice[i][j][0]);//p

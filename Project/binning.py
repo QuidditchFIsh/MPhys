@@ -12,21 +12,21 @@ myarray = np.loadtxt('HMC_Results.dat',delimiter = ',',unpack = True)
 nbins=50
 
 
-y,binEdges = np.histogram(myarray, bins=nbins)
-axes = plt.gca()
+#y,binEdges = np.histogram(myarray, bins=nbins)
+#axes = plt.gca()
 
-bincenters = 0.5*(binEdges[1:]+binEdges[:-1])
-menStd     = np.sqrt(y)
-width      = 0.05
-plt.bar(bincenters, y, width=width, color='r', yerr=menStd)
+#bincenters = 0.5*(binEdges[1:]+binEdges[:-1])
+#menStd     = np.sqrt(y)
+#width      = 0.05
+#plt.bar(bincenters, y, width=width, color='r', yerr=menStd)
 
 
 x = np.linspace(-2,2,100) # 100 linearly spaced numbers
 y = (1/(3.141**0.5))*np.exp(-x**2)
 out1 = plt.plot(x,y)
-out = plt.hist(myarray, bins=50,normed =1)
+out = plt.hist(myarray, bins=50,normed=1)
 axes = plt.gca()
-axes.set_xlim(2,-2)
+#axes.set_xlim(2,-2)
 
 plt.xlabel('x')
 plt.ylabel('|ψ|^2')

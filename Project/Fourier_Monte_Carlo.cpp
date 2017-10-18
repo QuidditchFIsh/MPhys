@@ -5,7 +5,7 @@
 		housed here and will be executed here. 
 */
 #include "Fourier_Monte_Carlo.h"
-#define Oscillator_flip 1
+#define Oscillator_flip 0
 //1 = harmonic oscillator, 0 = anharmonic oscillator
 
 
@@ -61,7 +61,7 @@ void F_lattice_Evolution(vector<vector<double> > &results,unsigned int length,do
  		H_new= F_hamiltonian(new_State,length,t_step);
  		//printf("%f\n",H_old-H_new);
 
- 		if(exp(H_old - H_new) < 1)
+ 		if(1 < exp(H_old - H_new))
  		{
  			acceptance++;
  			for(unsigned int k=0;k<length;k++)
@@ -83,7 +83,7 @@ void F_lattice_Evolution(vector<vector<double> > &results,unsigned int length,do
  			result_no++;
  		}
  	}
- 	printf("Acceptance rate is :%f %d/%d\n",(double)acceptance/iterations,acceptance,iterations);
+ //	printf("Acceptance rate is :%f %d/%d\n",(double)acceptance/iterations,acceptance,iterations);
 
 
 
@@ -99,30 +99,30 @@ void F_hmcAlgorithm(double t_step,double p_rand,double q_minus,double q,double q
 		unsigned int steps=15;
 	//anharmonic algorithm 
 #if !Oscillator_flip
-		p = p_rand - (0.5 * t_step * (q + (4*q*q*q)));
+		p = p_rand + (0.5 * t_step * (q + (4*q*q*q)));
 
 		for(unsigned int j=0;j<steps;j++)
 		{
 			q = q + (t_step * p);
 
-			if(j != steps-1) {p = p - (0.5 * t_step * (q_minus+q_plus-(2*q) + 2*q+ (4*q*q*q)));}
+			if(j != steps-1) {p = p + (t_step * (q_minus+q_plus-(2*q) + 2*q+ (4*q*q*q)));}
 		}
 
-		p = p - (0.5 * t_step * (q + (4*q*q*q)));
+		p = p + (0.5 * t_step * (q + (4*q*q*q)));
 
 #endif
 //harmonic algorithm 
 #if Oscillator_flip
-		p = p_rand - (0.5 * t_step * q );
+		p = p_rand + (0.5 * t_step * q );
 
 		for(unsigned int j=0;j<steps;j++)
 		{
 			q = q + (t_step * p);
 
-			if(j != steps-1) {p = p - (0.5 * t_step * (q_minus+q_plus-(2*q))* 2*q);}
+			if(j != steps-1) {p = p + (t_step * (q_minus+q_plus-(2*q) + 2*q));}
 		}
 
-		p = p - (0.5 * t_step * q);
+		p = p + (0.5 * t_step * q);
 
 #endif
 		state[0] = p;
@@ -142,12 +142,12 @@ double F_hamiltonian(vector<vector<double> > state,unsigned int length,double t_
 		//anharmonic
 		#if !Oscillator_flip
 
-			H += (pow((-state[i][1] + state[(i+1) % length][1]),2))/(0.5*pow(t_step,2)) + (pow(state[i][0],2) * 0.5) + (pow(state[i][1],2)* 0.5) + (pow(state[i][1],4));
+			H += (pow((-state[i][1] + state[(i+1) % length][1]),2))/(0.5*pow(t_step,2)) + (pow(state[i][0],2) * 0.5) - (pow(state[i][1],2)* 0.5) - (pow(state[i][1],4));
 		#endif
 
 		//harmonic
 		#if Oscillator_flip
-			H += (pow((-state[i][1] + state[(i+1) % length][1]),2))/(0.5*pow(t_step,2)) + (pow(state[i][0],2) * 0.5) + (pow(state[i][1],2)* 0.5);
+			H += -(pow((-state[i][1] + state[(i+1) % length][1]),2))/(0.5*pow(t_step,2)) + (pow(state[i][0],2) * 0.5) - (pow(state[i][1],2)* 0.5);
 		#endif
 	}
 	return H ;
