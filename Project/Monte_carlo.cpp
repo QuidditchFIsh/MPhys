@@ -237,7 +237,7 @@ double hamiltonian(double p,double q,double q_plus,double t_step)
 	double h=0;
 
 	//h = (p*p*0.5) + (pow((q_plus - q),2)*0.5*(1/t_step*t_step)) + (0.5*q*q);
-	h = (p*p*0.5) + (pow((q_plus - q),2)*0.5) + (0.5*q*q);
+	h = (p*p*0.5) + (pow((q_plus - q),2)*0.5*(1/t_step*t_step)) + (0.5*q*q);
 	//h = (p*p*0.5) + (0.5*q*q);
 
 	return h;
