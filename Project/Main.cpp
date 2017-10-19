@@ -20,7 +20,7 @@ int main(){
 	//Number of iterations of the HMC algorithm to be performed, and number of times the algoirthm is 
 	//going to loop
 
-	unsigned int iterations = 10000,length = 1000;
+	unsigned int iterations = 5000,length = 1000;
 	//unsigned int iterations = 20,length = 10;
 
 	double t_step=0.05;

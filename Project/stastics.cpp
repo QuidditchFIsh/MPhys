@@ -22,7 +22,7 @@ double avgX(vector<double> results)
 
 void moving_avg_X_Sqd(vector<vector<double> > results,vector<vector<double> > &stats_data,unsigned int iterations,unsigned int length)
 {	
-	
+#if 0
 	FILE * output1;
 	output1 = fopen("HMC_Results_x_2_10","w");
 
@@ -46,8 +46,9 @@ void moving_avg_X_Sqd(vector<vector<double> > results,vector<vector<double> > &s
 
 	//return sum/length;
 }
-#if 0
-{	
+#endif
+
+#if 1
 	
 	FILE * output1;
 	output1 = fopen("HMC_Results_x_2_10","w");
