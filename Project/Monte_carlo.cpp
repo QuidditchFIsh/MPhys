@@ -145,16 +145,15 @@ int hmcAlgorithm(unsigned int length,double t_step,vector<vector<double> > &old_
 	H_old=lattice_Hamiltonian(old_state,length,t_step);
 
 	//half step in the p
-	//	printf("################\n");
 	temp_State[0][0] = old_state[0][0] -  (0.5*t_step * (old_state[0][1] - (old_state[1][1]+old_state[length-1][1]-(2*old_state[0][1]))));
 	for(unsigned int j = 1;j<length-1;j++)
 	{
 		temp_State[j][0] = old_state[j][0] - (0.5*t_step * (old_state[j][1] - (old_state[j+1][1]+old_state[j-1][1]-(2*old_state[j][1]))));
 		temp_State[j][1] = old_state[j][1];
-		//printf("%f %f\n",temp_State[j][0],temp_State[j][1]);
+
 	}
 	temp_State[length-1][0] = old_state[length-1][0] - (0.5*t_step * (old_state[length-1][1] - (old_state[0][1]+old_state[length-2][1]-(2*old_state[length-1][1]))));
-			//printf("-------------------\n");
+
 
 
 
@@ -189,11 +188,7 @@ int hmcAlgorithm(unsigned int length,double t_step,vector<vector<double> > &old_
 		temp_State[j][0] = temp_State[j][0] - (0.5*t_step * (temp_State[j][1] - (temp_State[j+1][1]+temp_State[j-1][1]-(2*temp_State[j][1]))));
 	}
 	temp_State[length-1][0] = temp_State[length-1][0] - (0.5*t_step * (temp_State[length-1][1] - (temp_State[0][1]+temp_State[length-2][1]-(2*temp_State[length-1][1]))));
-	for(unsigned int j=0;j<length;j++)
-	{
-	//	printf("%f %f\n",temp_State[j][0],temp_State[j][1]);
-	}
-	//printf("################\n");
+
 	
 	H_new = lattice_Hamiltonian(temp_State,length,t_step);
 
@@ -201,7 +196,6 @@ int hmcAlgorithm(unsigned int length,double t_step,vector<vector<double> > &old_
 	double r = ((double) rand() / (RAND_MAX));
 
 	min = (1 < exp(H_old - H_new)) ? 1 : exp(H_old - H_new);
-	//printf("Hamiltonians: %f\n",exp(H_old-H_new));
 	if(r < min)
 	{
 		//accept
@@ -237,7 +231,7 @@ double hamiltonian(double p,double q,double q_plus,double t_step)
 	double h=0;
 
 	//h = (p*p*0.5) + (pow((q_plus - q),2)*0.5*(1/t_step*t_step)) + (0.5*q*q);
-	h = (p*p*0.5) + (pow((q_plus - q),2)*0.5*(1/t_step)) + (0.5*q*q*t_step);
+	h = (p*p*0.5) + (pow((q_plus - q),2)*0.5) + (0.5*q*q*t_step);
 	//h = (p*p*0.5) + (0.5*q*q);
 
 	return h;
