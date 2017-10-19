@@ -12,7 +12,7 @@ using namespace std;
 
 void lattice_Evolution(vector<vector<double> > &,unsigned int ,double ,unsigned int );
 
-void hmcAlgorithm(unsigned int ,double ,vector<vector<double> > &,vector<vector<double> > & );
+int hmcAlgorithm(unsigned int ,double ,vector<vector<double> > &,vector<vector<double> > & );
 
 double hamiltonian(double ,double ,double ,double );
 

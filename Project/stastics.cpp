@@ -24,7 +24,7 @@ void moving_avg_X_Sqd(vector<vector<double> > results,vector<vector<double> > &s
 {	
 	
 	FILE * output1;
-	output1 = fopen("HMC_Results_x_2","w");
+	output1 = fopen("HMC_Results_x_2_10","w");
 
 	double sum =0;
 	printf("%d %d\n",results.size(),results[0].size());
@@ -32,8 +32,8 @@ void moving_avg_X_Sqd(vector<vector<double> > results,vector<vector<double> > &s
 	for(unsigned int i=1;i<1000;i++)
 	{
 		for(unsigned int j=1;j < i;j++)
-		{
-			sum += results[j][0]*results[j][0];
+		{	
+			sum += results[j][500]*results[j][500];
 			//printf("%d %d\n",i,j);
 
 		}
@@ -46,6 +46,38 @@ void moving_avg_X_Sqd(vector<vector<double> > results,vector<vector<double> > &s
 
 	//return sum/length;
 }
+#if 0
+{	
+	
+	FILE * output1;
+	output1 = fopen("HMC_Results_x_2_10","w");
+
+	double sum =0,sum1=0;
+	printf("%d %d\n",results.size(),results[0].size());
+	printf("%d\n",iterations/5);
+	for(unsigned int i=1;i<1000;i++)
+	{
+		for(unsigned int j=1;j < i;j++)
+		{	
+			for(unsigned int k=0;k<length;k++)
+			{
+				sum1 +=results[j][k]*results[j][k];
+			}
+			sum1 = sum1/length;
+			sum += sum1;
+			sum1=0;
+			//printf("%d %d\n",i,j);
+		}
+		fprintf(output1,"%d %f \n ",i,sum/(double) i);
+		//printf("%f \n",sum/(double) i);
+		stats_data[i][1]=sum/(double) i;
+		sum=0;
+
+	}
+
+	//return sum/length;
+}
+#endif
 double avg_X_Sqd(vector<double> results)
 {	
 

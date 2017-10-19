@@ -22,6 +22,8 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
 	default_random_engine generator(random_device{}());
  	normal_distribution<double> distribution(0.0,1.0);
 
+ 	double acceptance =0;
+
  	for(unsigned int i=0;i<length;i++)
  	{
  		State[i][0]=0;
@@ -39,7 +41,7 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
  		{
  			State[j][0] = distribution(generator);
  		}
- 		hmcAlgorithm(length,t_step,State,temp_State);
+ 		acceptance += hmcAlgorithm(length,t_step,State,temp_State);
 
  		if(i % 5 == 0)
  		{
@@ -54,10 +56,11 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
  			result_no++;
  		}	
  	}
+ 	printf("The Acceptance Rate is %f percent \n",(acceptance*100)/(double) iterations);
 
 
 }
-void hmcAlgorithm(unsigned int length,double t_step,vector<vector<double> > &old_state,vector<vector<double> > &temp_State)
+int hmcAlgorithm(unsigned int length,double t_step,vector<vector<double> > &old_state,vector<vector<double> > &temp_State)
 {
 	/*
 	double min=0;
@@ -135,7 +138,7 @@ void hmcAlgorithm(unsigned int length,double t_step,vector<vector<double> > &old
 	}
 */
 	double min=0;
-	unsigned int steps = 15;
+	unsigned int steps = 25;
 
 	double H_old=0,H_new=0;
 
@@ -198,7 +201,7 @@ void hmcAlgorithm(unsigned int length,double t_step,vector<vector<double> > &old
 	double r = ((double) rand() / (RAND_MAX));
 
 	min = (1 < exp(H_old - H_new)) ? 1 : exp(H_old - H_new);
-//	printf("Hamiltonians: %f %f %f %f %f\n",H_old,H_new,exp(H_old-H_new),r,min);
+	//printf("Hamiltonians: %f\n",exp(H_old-H_new));
 	if(r < min)
 	{
 		//accept
@@ -207,8 +210,9 @@ void hmcAlgorithm(unsigned int length,double t_step,vector<vector<double> > &old
 			old_state[i][1] = temp_State[i][1];
 
 		}
-		//printf("welp\n");
+		return 1;
 	}
+	return 0;
 
 
 }
@@ -232,6 +236,7 @@ double hamiltonian(double p,double q,double q_plus,double t_step)
 {
 	double h=0;
 
+	//h = (p*p*0.5) + (pow((q_plus - q),2)*0.5*(1/t_step*t_step)) + (0.5*q*q);
 	h = (p*p*0.5) + (pow((q_plus - q),2)*0.5) + (0.5*q*q);
 	//h = (p*p*0.5) + (0.5*q*q);
 
