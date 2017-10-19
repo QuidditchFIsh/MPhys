@@ -59,6 +59,7 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
 }
 void hmcAlgorithm(unsigned int length,double t_step,vector<vector<double> > &old_state,vector<vector<double> > &temp_State)
 {
+	/*
 	double min=0;
 	unsigned int steps = 15;
 
@@ -88,18 +89,6 @@ void hmcAlgorithm(unsigned int length,double t_step,vector<vector<double> > &old
 		{
 			temp_State[j][1] = temp_State[j][1] + (t_step * temp_State[j][0]);
 		}
-		//update all p's based on the new q's
-		// if(i != steps-1)
-		// {
-		// temp_State[0][0] = temp_State[0][0] - ((2/t_step) * (temp_State[1][1]+temp_State[length-1][1]-(temp_State[0][1]*2))) - (t_step * temp_State[0][1]);
-
-		// for(unsigned int j = 1;j<length-1;j++)
-		// {
-		// 	temp_State[j][0] = temp_State[j][0] - ((2/t_step) * (temp_State[j+1][1]+temp_State[j-1][1]-(temp_State[j][1]*2))) - (t_step * temp_State[j][1]);
-		// }
-
-		// temp_State[length-1][0] = temp_State[length-1][0] - ((2/t_step) * ((temp_State[0][1]+temp_State[length-2][1]-(temp_State[length-1][1]*2)))) - (t_step * temp_State[length-1][1]);
-		// }
 
 
 		if(i != steps-1)
@@ -119,7 +108,7 @@ void hmcAlgorithm(unsigned int length,double t_step,vector<vector<double> > &old
 	//half step in the p
 	for(unsigned int j = 0;j<length;j++)
 	{
-		temp_State[j][0] = temp_State[j][0] + (0.5*t_step * temp_State[j][1]);
+		temp_State[j][0] = temp_State[j][0] - (0.5*t_step * temp_State[j][1]);
 	}
 	for(unsigned int j=0;j<length;j++)
 	{
@@ -134,7 +123,7 @@ void hmcAlgorithm(unsigned int length,double t_step,vector<vector<double> > &old
 
 	min = (1 < exp(H_old - H_new)) ? 1 : exp(H_old - H_new);
 	//printf("Hamiltonians: %f %f %f %f %f\n",H_old,H_new,exp(H_old-H_new),r,min);
-	if(r > min)
+	if(r < min)
 	{
 		//accept
 		for(unsigned int i = 0;i<length;i++)
@@ -144,7 +133,82 @@ void hmcAlgorithm(unsigned int length,double t_step,vector<vector<double> > &old
 		}
 		//printf("welp\n");
 	}
+*/
+	double min=0;
+	unsigned int steps = 15;
 
+	double H_old=0,H_new=0;
+
+	H_old=lattice_Hamiltonian(old_state,length,t_step);
+
+	//half step in the p
+	//	printf("################\n");
+	temp_State[0][0] = old_state[0][0] -  (0.5*t_step * (old_state[0][1] - (old_state[1][1]+old_state[length-1][1]-(2*old_state[0][1]))));
+	for(unsigned int j = 1;j<length-1;j++)
+	{
+		temp_State[j][0] = old_state[j][0] - (0.5*t_step * (old_state[j][1] - (old_state[j+1][1]+old_state[j-1][1]-(2*old_state[j][1]))));
+		temp_State[j][1] = old_state[j][1];
+		//printf("%f %f\n",temp_State[j][0],temp_State[j][1]);
+	}
+	temp_State[length-1][0] = old_state[length-1][0] - (0.5*t_step * (old_state[length-1][1] - (old_state[0][1]+old_state[length-2][1]-(2*old_state[length-1][1]))));
+			//printf("-------------------\n");
+
+
+
+	//full step in p and q for n steps
+	for(unsigned int i = 0;i<steps;i++)
+	{
+		//update all q's
+		for(unsigned int j = 0;j<length;j++)
+		{
+			temp_State[j][1] = temp_State[j][1] + (t_step * temp_State[j][0]);
+		}
+
+
+		if(i != steps-1)
+		{
+		temp_State[0][0] = temp_State[0][0] -  (t_step * (temp_State[0][1] - ((temp_State[1][1]+temp_State[length-1][1]-(2*temp_State[0][1])))));
+
+		for(unsigned int j = 1;j<length-1;j++)
+		{
+			temp_State[j][0] = temp_State[j][0] -  (t_step * (temp_State[j][1] - ((temp_State[j+1][1]+temp_State[j-1][1]-(2*temp_State[j][1])))));
+		}
+
+		temp_State[length-1][0] = temp_State[length-1][0] - (t_step * (temp_State[length-1][1] - ((temp_State[0][1]+temp_State[length-2][1]-(2*temp_State[length-1][1])))));
+		}
+
+
+	}
+	//half step in the p
+	temp_State[0][0] = temp_State[0][0] -  (0.5*t_step * (temp_State[0][1] - (temp_State[1][1]+temp_State[length-1][1]-(2*temp_State[0][1]))));
+	for(unsigned int j = 1;j<length-1;j++)
+	{
+		temp_State[j][0] = temp_State[j][0] - (0.5*t_step * (temp_State[j][1] - (temp_State[j+1][1]+temp_State[j-1][1]-(2*temp_State[j][1]))));
+	}
+	temp_State[length-1][0] = temp_State[length-1][0] - (0.5*t_step * (temp_State[length-1][1] - (temp_State[0][1]+temp_State[length-2][1]-(2*temp_State[length-1][1]))));
+	for(unsigned int j=0;j<length;j++)
+	{
+	//	printf("%f %f\n",temp_State[j][0],temp_State[j][1]);
+	}
+	//printf("################\n");
+	
+	H_new = lattice_Hamiltonian(temp_State,length,t_step);
+
+	//metroplis update
+	double r = ((double) rand() / (RAND_MAX));
+
+	min = (1 < exp(H_old - H_new)) ? 1 : exp(H_old - H_new);
+//	printf("Hamiltonians: %f %f %f %f %f\n",H_old,H_new,exp(H_old-H_new),r,min);
+	if(r < min)
+	{
+		//accept
+		for(unsigned int i = 0;i<length;i++)
+		{
+			old_state[i][1] = temp_State[i][1];
+
+		}
+		//printf("welp\n");
+	}
 
 
 }
@@ -168,8 +232,8 @@ double hamiltonian(double p,double q,double q_plus,double t_step)
 {
 	double h=0;
 
-	//h = (p*p*0.5) - (pow((q_plus - q),2))/(2*pow(t_step,2)) - (0.5*q*q);
-	h = (p*p) + (0.5*q*q);
+	h = (p*p*0.5) + (pow((q_plus - q),2)*0.5) + (0.5*q*q);
+	//h = (p*p*0.5) + (0.5*q*q);
 
 	return h;
 }

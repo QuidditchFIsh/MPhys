@@ -8,6 +8,7 @@ from array import *
 #data =loadtxt("HMC_Results.dat", unpack=True)
 myarray = np.loadtxt('HMC_Results.dat',delimiter = ',',unpack = True)
 
+
 #print(myarray)
 nbins=50
 
@@ -19,7 +20,7 @@ nbins=50
 #menStd     = np.sqrt(y)
 #width      = 0.05
 #plt.bar(bincenters, y, width=width, color='r', yerr=menStd)
-
+print(sum(myarray)/len(myarray))
 
 x = np.linspace(-2,2,100) # 100 linearly spaced numbers
 y = (1/(3.141**0.5))*np.exp(-x**2)
