@@ -20,7 +20,7 @@ int main(){
 	//Number of iterations of the HMC algorithm to be performed, and number of times the algoirthm is 
 	//going to loop
 
-	unsigned int iterations = 5000,length = 1000;
+	unsigned int iterations = 20000,length = 1000;
 	//unsigned int iterations = 20,length = 10;
 
 	double t_step=0.05;
@@ -29,15 +29,14 @@ int main(){
 	vector<double> v2(length,0);
 	vector<vector<double> >lattice(iterations,v2);
 
-	//0-<q>,1-<q^2>,2-<error>,3-autocorrelation
-	vector<double> v1(4,0);
-	vector<vector<double> >stats_Data(length,v1);
+	//0-<q>,1-<q^2>,3-autocorrelation,4-action,5-KE,6-delta_H
+	// vector<double> v1(5,0);
+	// vector<vector<double> >stats_Data(length,v1);
 
 	//create file to store the data into 
 
 	FILE * output;
 	output = fopen("HMC_Results.dat","w");
-
 
 	//begin each simulation at p=0 and q=0
 	printf("Started Simulatio with:\n %d Oscillators\n Iterating %d times at a time step of %f\n",length,iterations,t_step);
@@ -56,38 +55,23 @@ int main(){
 	printf("Begingin Stats Calculations\n");
 
 	//stats calculations go here
-//	printf("welp");
-	//for(unsigned int i=0;i<iterations/5;i++)
-	//{
-		//stats_Data[i][1]=avg_X_Sqd(lattice[i]);
-		moving_avg_X_Sqd(lattice,stats_Data,iterations,length);
-		//fprintf(output,"%d %f\n",i*5,stats_Data[i][1]);
-	//}
-	//moving_avg_X_Sqd(lattice,stats_Data,iterations,length);
-	//autocorrelation_Time(stats_Data,iterations,length);
-	//printf("welp");
-
 
 
 	t3=clock();
 	seconds =((float)t3-(float)t2)/(CLOCKS_PER_SEC);
 	printf("Statistics computation Completed in %f seconds\n",seconds);
 
-	#if 1
+#if 1
+	for(unsigned int i=0;i<length;i++)
+	{
+		fprintf(output,"%f\n",lattice[iterations/5 -1][i]);
+	}
+	// for(unsigned int i = 0;i< iterations/5;i++)
+	// {
+	// 	fprintf(output_stats,"%d %f %f %f %f %f\n",i,stats_Data[i][0],stats_Data[i][1],stats_Data[i][2],stats_Data[i][3],stats_Data[i][4]);
+	// }
 
-		//for(unsigned int j=0;j<iterations/5;j++)
-			//{
-				for(unsigned int i=0;i<length;i++)
-				{
-				//fprintf(output,"%d "j);
-				//fprintf(output,"%f ",lattice[i][j][0]);//p
-				fprintf(output,"%f\n",lattice[iterations/5 -1][i]);//q
-				//fprintf(output,"%f \n",lattice[0][j][1]);//<x^2>
-				//fprintf(output,"%f\n",lattice[i][j][3]);
-				}
-				//fprintf(output,"\n");
-			//}
-	#endif
+#endif
 
 	//after all of the simulation sare completed then perform all of the stastical analysis on it
 	

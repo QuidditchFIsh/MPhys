@@ -51,7 +51,7 @@ void moving_avg_X_Sqd(vector<vector<double> > results,vector<vector<double> > &s
 #if 1
 	
 	FILE * output1;
-	output1 = fopen("HMC_Results_x_2_10","w");
+	output1 = fopen("HMC_Results_x_2","w");
 
 	double sum =0,sum1=0;
 	printf("%d %d\n",results.size(),results[0].size());
@@ -169,6 +169,63 @@ void autocorrelation_Time(vector<vector<double> > data,unsigned int iterations,u
 		fprintf(output2,"%d %f\n",i,ACT[i]);
 	}
 
+}
+
+double lattice_Hamiltonian(vector<vector<double> > state,unsigned int length )
+{
+	double H=0;
+	//loop for all sites which are not effected by periodic BC's
+	for(unsigned int i=0;i<length-1;i++)
+	{
+		H += hamiltonian(state[0][i],state[1][i],state[1][i+1]);
+	}
+	//Periodic BC sites
+	H += hamiltonian(state[0][length-1],state[1][length-1],state[1][0]);
+
+	return H;
+
+}
+
+double lattice_Action(vector<double> q,unsigned int length)
+{
+	double S = 0;
+
+	for(unsigned int i =0; i<length-1;i++)
+	{
+		S += action(q[i],q[i+1]);
+	}
+
+	S += action(q[length-1],q[0]);
+
+	return S/(double)length;
+}
+
+double lattice_KineticEnergy(vector<double> p,unsigned int length)
+{
+	double KE =0;
+
+	for(unsigned int i =0; i<length;i++)
+	{
+		KE += kinetic_Energy(p[i]);
+	}
+
+	return KE/(double)length;
+}
+
+
+double hamiltonian(double p,double q,double q_plus )
+{
+	return (p*p*0.5) + (pow((q_plus - q),2)*0.5) + (0.5*q*q);
+}
+
+double action(double q, double q_plus)
+{
+	return (0.5*pow((q_plus - q),2) + (0.5 * pow(q,2)));
+}
+
+double kinetic_Energy(double p)
+{
+	return (p * p * 0.5);
 }
 
 

@@ -7,13 +7,11 @@
 #include <vector>
 #include <cmath>
 #include <algorithm>
+#include "stastics.h"
 
 using namespace std;
 
 void lattice_Evolution(vector<vector<double> > &,unsigned int ,double ,unsigned int );
 
-int hmcAlgorithm(unsigned int ,double ,vector<vector<double> > &,vector<vector<double> > & ,vector<double> &);
+double hmcAlgorithm(unsigned int ,double ,vector<vector<double> > &,vector<vector<double> > & ,vector<double> &);
 
-double hamiltonian(double ,double ,double);
-
-double lattice_Hamiltonian(vector<vector<double> > ,unsigned int);
