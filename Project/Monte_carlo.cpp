@@ -23,13 +23,15 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
 	vector<double> v(length,0);
 	vector<vector<double> >temp_State(2,v);
 
+	vector<double> square_state(length,0);
+
 	vector<double> H_store(201,0);
 	H_store[0]=0;
 
 	default_random_engine generator(random_device{}());
  	normal_distribution<double> distribution(0.0,1.0);
 
- 	double acceptance =0,delta_H_Average=0,temp=0;
+ 	double acceptance =0,delta_H_Average=0,temp=0,temp1=0,temp2=0,error_x2=0,error_x=0;
 
  	for(unsigned int i=0;i<length;i++)
  	{
@@ -56,14 +58,18 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
  			for(unsigned int k = 0;k<length;k++)
  			{
  				//lattice[result_no][k] = State[1][k];
+ 				square_state[k] = State[1][k] * State[1][k];
+ 				//printf("%f\n",square_state[k]);
 
  			}
- 			// stats_data[result_no][0] = avgX(State[1]);
- 			// stats_data[result_no][1] = avg_X_Sqd(State[1]);
- 			// stats_data[result_no][2] = lattice_Action(State[1],length);
- 			// stats_data[result_no][3] = lattice_KineticEnergy(State[0],length);
- 			// stats_data[result_no][4] = temp;
- 			fprintf(output_stats,"%d %f %f %f %f %f\n",i,avgX(State[1]),avg_X_Sqd(State[1]),lattice_Action(State[1],length),lattice_KineticEnergy(State[0],length),temp);
+
+ 			temp1 = avgX(square_state);
+ 			temp2 = avg_X_Sqd(square_state);
+ 			error_x = standard_Deviation(temp2,temp1,length);
+ 			temp1=avgX(State[1]);
+ 			temp2=avg_X_Sqd(State[1]);
+ 			error_x2 = standard_Deviation(temp2,temp1,length);
+ 			fprintf(output_stats,"%d %f %f %f %f %f %f %f\n",i,temp1,error_x,temp2,error_x2,lattice_Action(State[1],length),lattice_KineticEnergy(State[0],length),temp);
  			
 
  			result_no++;

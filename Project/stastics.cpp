@@ -101,6 +101,7 @@ double standard_Deviation(double avg_X_Sqd, double avgX,double length )
 	return sqrt(std_dev);
 }
 
+
 double error_Bars(vector<double> results)
 {
 
