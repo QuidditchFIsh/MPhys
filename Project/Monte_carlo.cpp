@@ -230,7 +230,7 @@ double hmcAlgorithm_Harmonic(unsigned int length,double t_step,vector<vector<dou
 double hmcAlgorithm_Anharmonic(unsigned int length,double t_step,vector<vector<double> > &old_state,vector<vector<double> > &temp_State,vector<double> &H_store)
 {
 
-	double min=0;
+	double min=0,f=0;
 	unsigned int steps = 20;
 
 	double H_old=0,H_new=0,H_inter=0;
@@ -238,7 +238,8 @@ double hmcAlgorithm_Anharmonic(unsigned int length,double t_step,vector<vector<d
 	H_old=lattice_Hamiltonian(old_state,length);
 
 	//half step in the p
-
+/*
+//old potential ie q^4
 	temp_State[0][0] = old_state[0][0] -  (0.5*t_step * (pow(old_state[1][0],3) + old_state[1][0] - (old_state[1][1]+old_state[1][length-1]-(2*old_state[1][0]))));
 	for(unsigned int j = 1;j<length-1;j++)
 	{
@@ -247,7 +248,16 @@ double hmcAlgorithm_Anharmonic(unsigned int length,double t_step,vector<vector<d
 		//printf("%f %f\n",temp_State[j][0],temp_State[j][1]);
 	}
 	temp_State[0][length-1] = old_state[0][length-1] - (0.5*t_step * (pow(old_state[1][length-1],3) + old_state[1][length-1] - (old_state[1][0]+old_state[1][length-2]-(2*old_state[1][length-1]))));
-
+*/
+	//modified potential V = (q^2 - f^2)^2
+	temp_State[0][0] = old_state[0][0] -  (0.5*t_step * ((old_state[1][0]*(pow(old_state[1][0],2)-f)) + old_state[1][0] - (old_state[1][1]+old_state[1][length-1]-(2*old_state[1][0]))));
+	for(unsigned int j = 1;j<length-1;j++)
+	{
+		temp_State[0][j] = old_state[0][j] - (0.5*t_step * ((old_state[1][j]*(pow(old_state[1][j],2)-f)) + old_state[1][j] - (old_state[1][j+1]+old_state[1][j-1]-(2*old_state[1][j]))));
+		temp_State[1][j] = old_state[1][j];
+		//printf("%f %f\n",temp_State[j][0],temp_State[j][1]);
+	}
+	temp_State[0][length-1] = old_state[0][length-1] - (0.5*t_step * ((old_state[1][length-1]*(pow(old_state[1][length-1],2)-f)) + old_state[1][length-1] - (old_state[1][0]+old_state[1][length-2]-(2*old_state[1][length-1]))));
 
 
 
@@ -264,14 +274,14 @@ double hmcAlgorithm_Anharmonic(unsigned int length,double t_step,vector<vector<d
 //a full step for when running the algorithm normally
 		if(i != steps-1)
 		{
-		temp_State[0][0] = temp_State[0][0] -  (t_step * (pow(temp_State[1][0],3) + temp_State[1][0] - ((temp_State[1][1]+temp_State[1][length-1]-(2*temp_State[1][0])))));
+		temp_State[0][0] = temp_State[0][0] -  (t_step * ((temp_State[1][0]*(pow(temp_State[1][0],2)-f)) + temp_State[1][0] - ((temp_State[1][1]+temp_State[1][length-1]-(2*temp_State[1][0])))));
 
 		for(unsigned int j = 1;j<length-1;j++)
 		{
-			temp_State[0][j] = temp_State[0][j] -  (t_step * (pow(temp_State[1][j],3) + temp_State[1][j] - ((temp_State[1][j+1]+temp_State[1][j-1]-(2*temp_State[1][j])))));
+			temp_State[0][j] = temp_State[0][j] -  (t_step * ((temp_State[1][j]*(pow(temp_State[1][j],2)-f)) + temp_State[1][j] - ((temp_State[1][j+1]+temp_State[1][j-1]-(2*temp_State[1][j])))));
 		}
 
-		temp_State[0][length-1] = temp_State[0][length-1] - (pow(temp_State[1][length-1],3) + t_step * (temp_State[1][length-1] - ((temp_State[1][0]+temp_State[1][length-2]-(2*temp_State[1][length-1])))));
+		temp_State[0][length-1] = temp_State[0][length-1] - ((temp_State[1][length-1]*(pow(temp_State[1][length-1],2)-f)) + t_step * (temp_State[1][length-1] - ((temp_State[1][0]+temp_State[1][length-2]-(2*temp_State[1][length-1])))));
 		}
 #endif 
 
@@ -302,12 +312,12 @@ temp_State[0][0] = temp_State[0][0] -  (t_step * (pow(temp_State[1][0],3) + temp
 
 	}
 	//half step in the p
-	temp_State[0][0] = temp_State[0][0] -  (0.5*t_step * (pow(temp_State[1][0],3) + temp_State[1][0] - (temp_State[1][1]+temp_State[1][length-1]-(2*temp_State[1][0]))));
+	temp_State[0][0] = temp_State[0][0] -  (0.5*t_step * ((temp_State[1][0]*(pow(temp_State[1][0],2)-f)) + temp_State[1][0] - (temp_State[1][1]+temp_State[1][length-1]-(2*temp_State[1][0]))));
 	for(unsigned int j = 1;j<length-1;j++)
 	{
-		temp_State[0][j] = temp_State[0][j] - (0.5*t_step * (pow(temp_State[1][j],3) + temp_State[1][j] - (temp_State[1][j+1]+temp_State[1][j-1]-(2*temp_State[1][j]))));
+		temp_State[0][j] = temp_State[0][j] - (0.5*t_step * ((temp_State[1][j]*(pow(temp_State[1][j],2)-f)) + temp_State[1][j] - (temp_State[1][j+1]+temp_State[1][j-1]-(2*temp_State[1][j]))));
 	}
-	temp_State[0][length-1] = temp_State[0][length-1] - (0.5*t_step * (pow(temp_State[1][length-1],3) + temp_State[1][length-1] - (temp_State[1][0]+temp_State[1][length-2]-(2*temp_State[1][length-1]))));
+	temp_State[0][length-1] = temp_State[0][length-1] - (0.5*t_step * ((temp_State[1][length-1]*(pow(temp_State[1][length-1],2)-f)) + temp_State[1][length-1] - (temp_State[1][0]+temp_State[1][length-2]-(2*temp_State[1][length-1]))));
 	
 	for(unsigned int j=0;j<length;j++)
 	{

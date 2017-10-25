@@ -265,12 +265,12 @@ double Harmonic_action(double q, double q_plus)
 }
 double Anarmonic_hamiltonian(double p,double q,double q_plus )
 {
-	return (p*p*0.5) + (pow((q_plus - q),2)*0.5) + (0.5 * pow(q,2)) + (0.25 * pow(q,4));
+	return (p*p*0.5) + (pow((q_plus - q),2)*0.5) + (0.5 * pow(q,2)) + (0.25 * pow((q*q) - 0,2));
 }
 
 double Anarmonic_action(double q, double q_plus)
 {
-	return (0.5*pow((q_plus - q),2) + (0.5 * pow(q,2)) + (0.25 * pow(q,4)));
+	return (0.5*pow((q_plus - q),2) + (0.5 * pow(q,2)) + (0.25 * pow((q*q) - 0,2)));
 }
 double kinetic_Energy(double p)
 {
