@@ -39,7 +39,7 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
 	default_random_engine generator(random_device{}());
  	normal_distribution<double> distribution(0.0,1.0);
 
- 	double acceptance =0,delta_H_Average=0,temp=0,temp1=0,temp2=0,error_x2=0,error_x=0;
+ 	double acceptance =0,delta_H_Average=0,temp=0,temp1=0,temp2=0,error_x2=0,error_x=0,ACT=0;
 
  	for(unsigned int i=0;i<length;i++)
  	{
@@ -58,6 +58,7 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
  		{
  			State[0][j] = distribution(generator);
  		}
+
  #if Oscillator_flip 
  		acceptance += hmcAlgorithm_Harmonic(length,t_step,State,temp_State,H_store);
  #endif
@@ -65,36 +66,13 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
  #if !Oscillator_flip
  		acceptance += hmcAlgorithm_Anharmonic(length,t_step,State,temp_State,H_store);
  #endif
- 		if(i == 1000)
- 		{
- 			for(unsigned int k=0;k<length;k++)
- 			{
- 				Energy_save[0][k] = State[1][k];
- 			}	
- 		}
- 		if(i == 2000)
- 		{
- 			 for(unsigned int k=0;k<length;k++)
- 			{
- 				Energy_save[1][k] = State[1][k];
- 			}
- 		}
- 		if(i == 3000)
- 		{
- 			 for(unsigned int k=0;k<length;k++)
- 			{
- 				Energy_save[2][k] = State[1][k];
- 			}
- 		}
- 		if(i % 10 == 0)
- 		{
+ 		
  			//copy results into results array
  			for(unsigned int k = 0;k<length;k++)
  			{
 // 				lattice[result_no][k] = State[1][k];
  				square_state[k] = State[1][k] * State[1][k];
  				//printf("%f\n",square_state[k]);
-
  			}
 
  			temp1 = avgX(square_state);
@@ -103,11 +81,13 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
  			temp1=avgX(State[1]);
  			temp2=avg_X_Sqd(State[1]);
  			error_x2 = standard_Deviation(temp2,temp1,length);
- 			fprintf(output_stats,"%d %f %f %f %f %f %f %f %f\n",i,temp1,error_x,temp2,error_x2,lattice_Action(State[1],length),lattice_KineticEnergy(State[0],length),temp,avg_X_four(State[1]));
+
+ 			ACT = autocorrelation_Time(State[1],State[1],length);
+
+ 			fprintf(output_stats,"%d %f %f %f %f %f %f %f %f\n",i,temp1,error_x,temp2,error_x2,lattice_Action(State[1],length),lattice_KineticEnergy(State[0],length),temp,ACT);
  			
 
  			result_no++;
- 		}
  		
  	}
  	
@@ -128,7 +108,7 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
 double hmcAlgorithm_Harmonic(unsigned int length,double t_step,vector<vector<double> > &old_state,vector<vector<double> > &temp_State,vector<double> &H_store)
 {
 
-	double min=0;
+	double min=0,mu=9;
 	unsigned int steps = 10;
 
 	double H_old=0,H_new=0,H_inter=0;
@@ -137,14 +117,14 @@ double hmcAlgorithm_Harmonic(unsigned int length,double t_step,vector<vector<dou
 
 	//half step in the p
 
-	temp_State[0][0] = old_state[0][0] -  (0.5*t_step * (old_state[1][0] - (old_state[1][1]+old_state[1][length-1]-(2*old_state[1][0]))));
+	temp_State[0][0] = old_state[0][0] -  (0.5*t_step * ((mu*old_state[1][0]) - (old_state[1][1]+old_state[1][length-1]-(2*old_state[1][0]))));
 	for(unsigned int j = 1;j<length-1;j++)
 	{
-		temp_State[0][j] = old_state[0][j] - (0.5*t_step * (old_state[1][j] - (old_state[1][j+1]+old_state[1][j-1]-(2*old_state[1][j]))));
+		temp_State[0][j] = old_state[0][j] - (0.5*t_step * ((mu*old_state[1][j]) - (old_state[1][j+1]+old_state[1][j-1]-(2*old_state[1][j]))));
 		temp_State[1][j] = old_state[1][j];
 		//printf("%f %f\n",temp_State[j][0],temp_State[j][1]);
 	}
-	temp_State[0][length-1] = old_state[0][length-1] - (0.5*t_step * (old_state[1][length-1] - (old_state[1][0]+old_state[1][length-2]-(2*old_state[1][length-1]))));
+	temp_State[0][length-1] = old_state[0][length-1] - (0.5*t_step * ((mu*old_state[1][length-1]) - (old_state[1][0]+old_state[1][length-2]-(2*old_state[1][length-1]))));
 
 
 
@@ -162,14 +142,14 @@ double hmcAlgorithm_Harmonic(unsigned int length,double t_step,vector<vector<dou
 //a full step for when running the algorithm normally
 		if(i != steps-1)
 		{
-		temp_State[0][0] = temp_State[0][0] -  (t_step * (temp_State[1][0] - ((temp_State[1][1]+temp_State[1][length-1]-(2*temp_State[1][0])))));
+		temp_State[0][0] = temp_State[0][0] -  (t_step * ((mu*temp_State[1][0]) - ((temp_State[1][1]+temp_State[1][length-1]-(2*temp_State[1][0])))));
 
 		for(unsigned int j = 1;j<length-1;j++)
 		{
-			temp_State[0][j] = temp_State[0][j] -  (t_step * (temp_State[1][j] - ((temp_State[1][j+1]+temp_State[1][j-1]-(2*temp_State[1][j])))));
+			temp_State[0][j] = temp_State[0][j] -  (t_step * ((mu*temp_State[1][j]) - ((temp_State[1][j+1]+temp_State[1][j-1]-(2*temp_State[1][j])))));
 		}
 
-		temp_State[0][length-1] = temp_State[0][length-1] - (t_step * (temp_State[1][length-1] - ((temp_State[1][0]+temp_State[1][length-2]-(2*temp_State[1][length-1])))));
+		temp_State[0][length-1] = temp_State[0][length-1] - (t_step * ((mu*temp_State[1][length-1]) - ((temp_State[1][0]+temp_State[1][length-2]-(2*temp_State[1][length-1])))));
 		}
 #endif 
 
@@ -202,12 +182,12 @@ double hmcAlgorithm_Harmonic(unsigned int length,double t_step,vector<vector<dou
 
 	}
 	//half step in the p
-	temp_State[0][0] = temp_State[0][0] -  (0.5*t_step * (temp_State[1][0] - (temp_State[1][1]+temp_State[1][length-1]-(2*temp_State[1][0]))));
+	temp_State[0][0] = temp_State[0][0] -  (0.5*t_step * ((mu*temp_State[1][0]) - (temp_State[1][1]+temp_State[1][length-1]-(2*temp_State[1][0]))));
 	for(unsigned int j = 1;j<length-1;j++)
 	{
-		temp_State[0][j] = temp_State[0][j] - (0.5*t_step * (temp_State[1][j] - (temp_State[1][j+1]+temp_State[1][j-1]-(2*temp_State[1][j]))));
+		temp_State[0][j] = temp_State[0][j] - (0.5*t_step * ((mu*temp_State[1][j]) - (temp_State[1][j+1]+temp_State[1][j-1]-(2*temp_State[1][j]))));
 	}
-	temp_State[0][length-1] = temp_State[0][length-1] - (0.5*t_step * (temp_State[1][length-1] - (temp_State[1][0]+temp_State[1][length-2]-(2*temp_State[1][length-1]))));
+	temp_State[0][length-1] = temp_State[0][length-1] - (0.5*t_step * ((mu*temp_State[1][length-1]) - (temp_State[1][0]+temp_State[1][length-2]-(2*temp_State[1][length-1]))));
 	
 	for(unsigned int j=0;j<length;j++)
 	{

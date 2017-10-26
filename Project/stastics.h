@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <random>
 #include <cmath>
+#include <algorithm>
 using namespace std;
 
 double avgX(vector<double> );
@@ -16,7 +17,7 @@ double standard_Deviation(double , double ,double  );
 
 double error_Bars(vector<double> );
 
-void autocorrelation_Time(vector<vector<double> > ,unsigned int ,unsigned int );
+double autocorrelation_Time(vector<double> ,vector<double>,unsigned int );
 
 double lattice_Hamiltonian(vector<vector<double> > ,unsigned int);
 

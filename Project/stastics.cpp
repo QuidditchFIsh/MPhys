@@ -147,47 +147,21 @@ double error_Bars(vector<double> results)
 }
 
 
-void autocorrelation_Time(vector<vector<double> > data,unsigned int iterations,unsigned int length)
+double autocorrelation_Time(vector<double> data,vector<double>data_rotate,unsigned int length)
 {
 
-	FILE * output2;
-	output2 = fopen("HMC_Results_ACT","w");
+	double sum1=0;
+	int dT=100;
 
-	vector<double> stats(iterations/5,0);
+	rotate(data_rotate.begin(),data_rotate.begin()+dT,data_rotate.end());
 
-	vector<double> ACT(iterations/5,0);
-
-	double sum1=0,sum2=0;
-
-
-	for(unsigned int i=1;i<iterations/5;i++)
+	for(unsigned int i=0;i<length ;i++)
 	{
-		stats[i-1] = data[i][1];
-		//printf("%f\n",stats[i]);
+		sum1 += data[i] * data_rotate[i];
 	}
 
-	double avgx2 = avgX(stats),x2_0 = stats[0];
+	return sum1/(double)length;
 
-	for(unsigned int i=0;i<iterations/5;i++)
-	{
-		sum2 += (stats[i]-avgx2)*(stats[i]-avgx2);
-	}
-	//printf("%f %f %f\n",sum2,x2_0,avgx2);
-	for(unsigned int i=0;i<iterations/5;i++)
-	{
-		for(unsigned int j=i+1;j<iterations/5-i;j++)
-		{
-			sum1 += (stats[j]-avgx2)*(stats[j+i]-avgx2);
-		}
-		ACT[i]=sum1/sum2;
-		sum1=0;
-	}
-
-	for(unsigned int i=0;i<iterations/5;i++)
-	{
-		//fprintf(output2,"%f\n",ACT[i]);
-		fprintf(output2,"%d %f\n",i,ACT[i]);
-	}
 
 }
 
@@ -256,12 +230,12 @@ double lattice_KineticEnergy(vector<double> p,unsigned int length)
 
 double Harmonic_hamiltonian(double p,double q,double q_plus )
 {
-	return (p*p*0.5) + (pow((q_plus - q),2)*0.5) + (0.5*q*q);
+	return (p*p*0.5) + (pow((q_plus - q),2)*0.5) + (4.5*q*q);
 }
 
 double Harmonic_action(double q, double q_plus)
 {
-	return (0.5*pow((q_plus - q),2) + (0.5 * pow(q,2)));
+	return (0.5*pow((q_plus - q),2) + (4.5 * pow(q,2)));
 }
 double Anarmonic_hamiltonian(double p,double q,double q_plus )
 {

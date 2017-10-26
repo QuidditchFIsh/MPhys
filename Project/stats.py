@@ -33,29 +33,28 @@ data=np.genfromtxt("HMC_X.dat", unpack=True)
 #print(data)
 
 
-
+po=[]
 #stats calculations
-for j in range(1,len(i)):
+for j in range(101,len(i)):
 	sum1 += avgx[j]
 	sum2 += avgx2[j]
 	sum3 += action[j]
 	sum4 += KE[j]
 	sum5 += delta_h[j]
-	sum6 += avgx4[j]
 	
 	sum12 += avgx[j] * avgx[j]
 	sum22 += avgx2[j] * avgx2[j]
 	sum32 += action[j] * action[j]
 	sum42 += KE[j] * KE[j]
 	sum52 += delta_h[j] * delta_h[j]
-	sum62 += avgx4[j] * avgx4[j]
+
 	
 	Mavgx.append(sum1/j)
-	Mavgx2.append(sum2/j)
+	Mavgx2.append(sum2/(j-100))
 	Maction.append(sum3/j)
 	MKE.append(sum4/j)
 	Mdelta_h.append(sum5/j)
-	Mavgx4.append(sum6/j)
+
 
 	avgxerr.append((sum12/j)-(sum1*sum1/(j*j))/j)
 	avgx2err.append((sum22/j)-(sum2*sum2/(j*j))/j)
@@ -63,8 +62,10 @@ for j in range(1,len(i)):
 	KEerr.append((sum42/j)-(sum4*sum4/(j*j))/j)
 	delta_herr.append((sum52/j)-(sum5*sum5/(j*j))/j)
 
-print(Mavgx2[len(i)-2])
-print(Mavgx4[len(i)-2])
+
+print(Mavgx2)
+#print(Mavgx2[len(i)-202])
+#print(Mavgx4[len(i)-202])
 
 '''
 deltaT=250;sumDT=0;sumT=0;X_0=avgx[0]
@@ -87,7 +88,7 @@ g=plt.figure()
 plt.ylabel('<X>')
 plt.xlabel('Monte Carlo Iterations')
 plt.title('Average X')
-plt.plot(avgx,label='Simulated AvgX')
+plt.plot(Mavgx,label='Simulated AvgX')
 plt.axhline(y=0,lw=1,color='red',label='Theoritical AvgX')
 plt.legend(loc='lower right')
 g.savefig("Average_X_Anharmonic.pdf")
@@ -98,8 +99,9 @@ plt.ylabel('<X^2>')
 plt.xlabel('Monte Carlo Iterations')
 plt.title('Average X^2')
 #hx2=h.add_subplot(211)
-plt.plot(avgx2,label='Simulated AvgX^2')
-plt.axhline(y=0.4472135955,lw=1,color='red',label='Theoritical AvgX^2')
+plt.plot(Mavgx2,label='Simulated AvgX^2')
+#plt.axhline(y=0.4472135955,lw=1,color='red',label='Theoritical AvgX^2')
+plt.axhline(y=0.1767766953,lw=1,color='red',label='Theoritical AvgX^2')
 plt.legend(loc='center right')
 #hx=h.add_subplot(212)
 #hx.plot(avgx2err,label='Simulated AvgX^2 Error')
@@ -111,8 +113,8 @@ plt.ylabel('<X^4>')
 plt.xlabel('Monte Carlo Iterations')
 plt.title('Average X^4')
 #hx2=h.add_subplot(211)
-plt.plot(avgx4,label='Simulated AvgX^4')
-plt.axhline(y=0.4472135955,lw=1,color='red',label='Theoritical AvgX^2')
+plt.plot(po,label='Simulated AvgX^4')
+#plt.axhline(y=0.4472135955,lw=1,color='red',label='Theoritical AvgX^2')
 plt.legend(loc='center right')
 #hx=h.add_subplot(212)
 #hx.plot(avgx2err,label='Simulated AvgX^2 Error')
@@ -123,7 +125,7 @@ k=plt.figure()
 plt.xlabel('Monte Carlo Iterations')
 plt.ylabel('Action Per Lattice Site(S)')
 plt.title('Average Action')
-plt.plot(action,label='Simulated Action')
+plt.plot(Maction,label='Simulated Action')
 plt.axhline(y=0.5,lw=1,color='red',label='Theoritical Action')
 plt.legend(loc='lower right')
 k.savefig("Average_Action_Anharmonic.pdf")
@@ -134,7 +136,7 @@ l=plt.figure()
 plt.xlabel('Monte Carlo Iterations')
 plt.ylabel('Kinetic Energy Per Lattice Site')
 plt.title('Average Kinetic Energy')
-plt.plot(KE,label='Simulated Avgerage Kinetic Energy')
+plt.plot(MKE,label='Simulated Avgerage Kinetic Energy')
 plt.axhline(y=0.5,lw=1,color='red',label='Theoritical Avgerage Kinetic Energy')
 plt.legend(loc='lower right')
 l.savefig("Average_KE_Anharmonic.pdf")
@@ -144,7 +146,7 @@ m=plt.figure()
 plt.xlabel('Monte Carlo Iterations')
 plt.ylabel('Delta_H')
 plt.title('Average Delta_H')
-plt.plot(delta_h,label='Simulated Delta_H')
+plt.plot(Mdelta_h,label='Simulated Delta_H')
 plt.axhline(y=0,lw=1,color='red',label='Theoritical Delta_H')
 plt.legend(loc='lower right')
 m.savefig("Average_Delta_H_Anharmonic.pdf")
