@@ -5,7 +5,7 @@
 		housed here and will be executed here. 
 */
 #include "Monte_carlo.h"
-#define Oscillator_flip 0
+#define Oscillator_flip 1
 //1 = Harmonic
 //0 = Anharmonic
 
@@ -17,6 +17,9 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
 
 	FILE * output_stats;
 	output_stats = fopen("HMC_Stats.dat","w");
+
+	FILE * output_X;
+	output_X = fopen("HMC_X.dat","w");
 
 	// p-0,q-1
 	vector<double> v1(length,0);
@@ -107,8 +110,14 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
  		}
  		
  	}
+ 	/*
  	printf("%f\n",Energy_gap_calc(Energy_save,length));
  	printf("The average delta H is %f percent \n",(delta_H_Average)/(double) iterations);
+ 	*/
+ 	for(unsigned int i=0;i<length;i++)
+ 	{
+ 		fprintf(output_X,"%f\n",State[1][i]);
+ 	}
  	for(unsigned int i=0;i<201;i++)
  	{
  		fprintf(out,"%f \n",H_store[i]/(double)iterations);
@@ -230,7 +239,7 @@ double hmcAlgorithm_Harmonic(unsigned int length,double t_step,vector<vector<dou
 double hmcAlgorithm_Anharmonic(unsigned int length,double t_step,vector<vector<double> > &old_state,vector<vector<double> > &temp_State,vector<double> &H_store)
 {
 
-	double min=0,f=0;
+	double min=0,f=1;
 	unsigned int steps = 20;
 
 	double H_old=0,H_new=0,H_inter=0;
@@ -238,7 +247,7 @@ double hmcAlgorithm_Anharmonic(unsigned int length,double t_step,vector<vector<d
 	H_old=lattice_Hamiltonian(old_state,length);
 
 	//half step in the p
-/*
+
 //old potential ie q^4
 	temp_State[0][0] = old_state[0][0] -  (0.5*t_step * (pow(old_state[1][0],3) + old_state[1][0] - (old_state[1][1]+old_state[1][length-1]-(2*old_state[1][0]))));
 	for(unsigned int j = 1;j<length-1;j++)
@@ -248,17 +257,17 @@ double hmcAlgorithm_Anharmonic(unsigned int length,double t_step,vector<vector<d
 		//printf("%f %f\n",temp_State[j][0],temp_State[j][1]);
 	}
 	temp_State[0][length-1] = old_state[0][length-1] - (0.5*t_step * (pow(old_state[1][length-1],3) + old_state[1][length-1] - (old_state[1][0]+old_state[1][length-2]-(2*old_state[1][length-1]))));
-*/
+/*
 	//modified potential V = (q^2 - f^2)^2
-	temp_State[0][0] = old_state[0][0] -  (0.5*t_step * ((old_state[1][0]*(pow(old_state[1][0],2)-f)) + old_state[1][0] - (old_state[1][1]+old_state[1][length-1]-(2*old_state[1][0]))));
+	temp_State[0][0] = old_state[0][0] -  (0.5*t_step * ((old_state[1][0]*(pow(old_state[1][0],2)-f)) - (old_state[1][1]+old_state[1][length-1]-(2*old_state[1][0]))));
 	for(unsigned int j = 1;j<length-1;j++)
 	{
-		temp_State[0][j] = old_state[0][j] - (0.5*t_step * ((old_state[1][j]*(pow(old_state[1][j],2)-f)) + old_state[1][j] - (old_state[1][j+1]+old_state[1][j-1]-(2*old_state[1][j]))));
+		temp_State[0][j] = old_state[0][j] - (0.5*t_step * ((old_state[1][j]*(pow(old_state[1][j],2)-f))- (old_state[1][j+1]+old_state[1][j-1]-(2*old_state[1][j]))));
 		temp_State[1][j] = old_state[1][j];
 		//printf("%f %f\n",temp_State[j][0],temp_State[j][1]);
 	}
-	temp_State[0][length-1] = old_state[0][length-1] - (0.5*t_step * ((old_state[1][length-1]*(pow(old_state[1][length-1],2)-f)) + old_state[1][length-1] - (old_state[1][0]+old_state[1][length-2]-(2*old_state[1][length-1]))));
-
+	temp_State[0][length-1] = old_state[0][length-1] - (0.5*t_step * ((old_state[1][length-1]*(pow(old_state[1][length-1],2)-f))- (old_state[1][0]+old_state[1][length-2]-(2*old_state[1][length-1]))));
+*/
 
 
 	//full step in p and q for n steps
@@ -272,21 +281,21 @@ double hmcAlgorithm_Anharmonic(unsigned int length,double t_step,vector<vector<d
 
 #if 1
 //a full step for when running the algorithm normally
+		
 		if(i != steps-1)
+
 		{
-		temp_State[0][0] = temp_State[0][0] -  (t_step * ((temp_State[1][0]*(pow(temp_State[1][0],2)-f)) + temp_State[1][0] - ((temp_State[1][1]+temp_State[1][length-1]-(2*temp_State[1][0])))));
+		/*
+		//potential as V=(x^2 - f^2)^2
+		temp_State[0][0] = temp_State[0][0] -  (t_step * ((temp_State[1][0]*(pow(temp_State[1][0],2)-f)) - ((temp_State[1][1]+temp_State[1][length-1]-(2*temp_State[1][0])))));
 
 		for(unsigned int j = 1;j<length-1;j++)
 		{
-			temp_State[0][j] = temp_State[0][j] -  (t_step * ((temp_State[1][j]*(pow(temp_State[1][j],2)-f)) + temp_State[1][j] - ((temp_State[1][j+1]+temp_State[1][j-1]-(2*temp_State[1][j])))));
+			temp_State[0][j] = temp_State[0][j] -  (t_step * ((temp_State[1][j]*(pow(temp_State[1][j],2)-f))  - ((temp_State[1][j+1]+temp_State[1][j-1]-(2*temp_State[1][j])))));
 		}
 
-		temp_State[0][length-1] = temp_State[0][length-1] - ((temp_State[1][length-1]*(pow(temp_State[1][length-1],2)-f)) + t_step * (temp_State[1][length-1] - ((temp_State[1][0]+temp_State[1][length-2]-(2*temp_State[1][length-1])))));
-		}
-#endif 
-
-#if 0
-//two half steps for running when checking the algorithm still is equivalent to one full step only with a calcuation of the hamiltonian in the middle
+		temp_State[0][length-1] = temp_State[0][length-1] - (t_step * ((temp_State[1][length-1]*(pow(temp_State[1][length-1],2)-f))  - ((temp_State[1][0]+temp_State[1][length-2]-(2*temp_State[1][length-1])))));
+		*/
 		temp_State[0][0] = temp_State[0][0] -  (t_step * (pow(temp_State[1][0],3) + temp_State[1][0] - ((temp_State[1][1]+temp_State[1][length-1]-(2*temp_State[1][0])))));
 
 		for(unsigned int j = 1;j<length-1;j++)
@@ -294,30 +303,55 @@ double hmcAlgorithm_Anharmonic(unsigned int length,double t_step,vector<vector<d
 			temp_State[0][j] = temp_State[0][j] -  (t_step * (pow(temp_State[1][j],3) + temp_State[1][j] - ((temp_State[1][j+1]+temp_State[1][j-1]-(2*temp_State[1][j])))));
 		}
 
-		temp_State[0][length-1] = temp_State[0][length-1] - (pow(temp_State[1][length-1],3) + t_step * (temp_State[1][length-1] - ((temp_State[1][0]+temp_State[1][length-2]-(2*temp_State[1][length-1])))));
+		temp_State[0][length-1] = temp_State[0][length-1] - (t_step *(pow(temp_State[1][length-1],3) + (temp_State[1][length-1] - ((temp_State[1][0]+temp_State[1][length-2]-(2*temp_State[1][length-1]))))));
+
+		}
+
+#endif 
+
+#if 0
+//two half steps for running when checking the algorithm still is equivalent to one full step only with a calcuation of the hamiltonian in the middle
+		temp_State[0][0] = temp_State[0][0] -  (0.5*t_step * (pow(temp_State[1][0],3) + temp_State[1][0] - ((temp_State[1][1]+temp_State[1][length-1]-(2*temp_State[1][0])))));
+
+		for(unsigned int j = 1;j<length-1;j++)
+		{
+			temp_State[0][j] = temp_State[0][j] -  (0.5*t_step * (pow(temp_State[1][j],3) + temp_State[1][j] - ((temp_State[1][j+1]+temp_State[1][j-1]-(2*temp_State[1][j])))));
+		}
+
+		temp_State[0][length-1] = temp_State[0][length-1] - (0.5*t_step *(pow(temp_State[1][length-1],3) + (temp_State[1][length-1] - ((temp_State[1][0]+temp_State[1][length-2]-(2*temp_State[1][length-1]))))));
+
 		//calcuate the hamiltonian here.
 		H_store[i+1] +=lattice_Hamiltonian(temp_State,length)-H_old;
 
 
-temp_State[0][0] = temp_State[0][0] -  (t_step * (pow(temp_State[1][0],3) + temp_State[1][0] - ((temp_State[1][1]+temp_State[1][length-1]-(2*temp_State[1][0])))));
+		temp_State[0][0] = temp_State[0][0] -  (0.5*t_step * (pow(temp_State[1][0],3) + temp_State[1][0] - ((temp_State[1][1]+temp_State[1][length-1]-(2*temp_State[1][0])))));
 
 		for(unsigned int j = 1;j<length-1;j++)
 		{
-			temp_State[0][j] = temp_State[0][j] -  (t_step * (pow(temp_State[1][j],3) + temp_State[1][j] - ((temp_State[1][j+1]+temp_State[1][j-1]-(2*temp_State[1][j])))));
+			temp_State[0][j] = temp_State[0][j] -  (0.5*t_step * (pow(temp_State[1][j],3) + temp_State[1][j] - ((temp_State[1][j+1]+temp_State[1][j-1]-(2*temp_State[1][j])))));
 		}
 
-		temp_State[0][length-1] = temp_State[0][length-1] - (pow(temp_State[1][length-1],3) + t_step * (temp_State[1][length-1] - ((temp_State[1][0]+temp_State[1][length-2]-(2*temp_State[1][length-1])))));
+		temp_State[0][length-1] = temp_State[0][length-1] - (0.5 * t_step *(pow(temp_State[1][length-1],3) + t_step * (temp_State[1][length-1] - ((temp_State[1][0]+temp_State[1][length-2]-(2*temp_State[1][length-1]))))));
 
 #endif
 
 	}
 	//half step in the p
-	temp_State[0][0] = temp_State[0][0] -  (0.5*t_step * ((temp_State[1][0]*(pow(temp_State[1][0],2)-f)) + temp_State[1][0] - (temp_State[1][1]+temp_State[1][length-1]-(2*temp_State[1][0]))));
+	temp_State[0][0] = temp_State[0][0] -  (0.5*t_step * (pow(temp_State[1][0],3) + temp_State[1][0] - (temp_State[1][1]+temp_State[1][length-1]-(2*temp_State[1][0]))));
 	for(unsigned int j = 1;j<length-1;j++)
 	{
-		temp_State[0][j] = temp_State[0][j] - (0.5*t_step * ((temp_State[1][j]*(pow(temp_State[1][j],2)-f)) + temp_State[1][j] - (temp_State[1][j+1]+temp_State[1][j-1]-(2*temp_State[1][j]))));
+		temp_State[0][j] = temp_State[0][j] - (0.5*t_step * (pow(temp_State[1][j],3) + temp_State[1][j] - (temp_State[1][j+1]+temp_State[1][j-1]-(2*temp_State[1][j]))));
+		temp_State[1][j] = temp_State[1][j];
+		//printf("%f %f\n",temp_State[j][0],temp_State[j][1]);
 	}
-	temp_State[0][length-1] = temp_State[0][length-1] - (0.5*t_step * ((temp_State[1][length-1]*(pow(temp_State[1][length-1],2)-f)) + temp_State[1][length-1] - (temp_State[1][0]+temp_State[1][length-2]-(2*temp_State[1][length-1]))));
+	temp_State[0][length-1] = temp_State[0][length-1] - (0.5*t_step * (pow(temp_State[1][length-1],3) + temp_State[1][length-1] - (temp_State[1][0]+temp_State[1][length-2]-(2*temp_State[1][length-1]))));
+//Potential at V=(x^2-f^2)^2
+	// temp_State[0][0] = temp_State[0][0] -  (0.5*t_step * ((temp_State[1][0]*(pow(temp_State[1][0],2)-f)) - (temp_State[1][1]+temp_State[1][length-1]-(2*temp_State[1][0]))));
+	// for(unsigned int j = 1;j<length-1;j++)
+	// {
+	// 	temp_State[0][j] = temp_State[0][j] - (0.5*t_step * ((temp_State[1][j]*(pow(temp_State[1][j],2)-f)) - (temp_State[1][j+1]+temp_State[1][j-1]-(2*temp_State[1][j]))));
+	// }
+	// temp_State[0][length-1] = temp_State[0][length-1] - (0.5*t_step * ((temp_State[1][length-1]*(pow(temp_State[1][length-1],2)-f)) - (temp_State[1][0]+temp_State[1][length-2]-(2*temp_State[1][length-1]))));
 	
 	for(unsigned int j=0;j<length;j++)
 	{
