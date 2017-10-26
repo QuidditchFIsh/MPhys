@@ -239,7 +239,7 @@ double hmcAlgorithm_Harmonic(unsigned int length,double t_step,vector<vector<dou
 double hmcAlgorithm_Anharmonic(unsigned int length,double t_step,vector<vector<double> > &old_state,vector<vector<double> > &temp_State,vector<double> &H_store)
 {
 
-	double min=0,f=1,mu = -4,lamba=0.1;
+	double min=0,f=1,mu = -20,lamba=0.1;
 	mu = mu * 2;
 	lamba = lamba * 4;
 	unsigned int steps = 20;
