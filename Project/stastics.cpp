@@ -6,7 +6,7 @@
 */
 
 #include "stastics.h"
-#define Stats_Flip 0
+#define Stats_Flip 1
 //1 = Harmonic
 //0 = Anharmonic
 

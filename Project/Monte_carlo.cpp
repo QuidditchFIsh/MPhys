@@ -5,7 +5,7 @@
 		housed here and will be executed here. 
 */
 #include "Monte_carlo.h"
-#define Oscillator_flip 0
+#define Oscillator_flip 1
 //1 = Harmonic
 //0 = Anharmonic
 
@@ -59,7 +59,7 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
  			State[0][j] = distribution(generator);
  		}
  #if Oscillator_flip 
- 		temp = hmcAlgorithm_Harmonic(length,t_step,State,temp_State,H_store);
+ 		acceptance += hmcAlgorithm_Harmonic(length,t_step,State,temp_State,H_store);
  #endif
 
  #if !Oscillator_flip
@@ -129,7 +129,7 @@ double hmcAlgorithm_Harmonic(unsigned int length,double t_step,vector<vector<dou
 {
 
 	double min=0;
-	unsigned int steps = 20;
+	unsigned int steps = 10;
 
 	double H_old=0,H_new=0,H_inter=0;
 
@@ -229,10 +229,11 @@ double hmcAlgorithm_Harmonic(unsigned int length,double t_step,vector<vector<dou
 			old_state[1][i] = temp_State[1][i];
 
 		}
-		return H_old - H_new;
+		//return H_old - H_new;
+		return 1;
 	}
-	return H_old - H_new;
-
+	//return H_old - H_new;
+	return 0;
 
 }
 

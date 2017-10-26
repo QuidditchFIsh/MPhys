@@ -23,7 +23,7 @@ int main(){
 	unsigned int iterations = 8000,length = 2000;
 	//unsigned int iterations = 20,length = 10;
 
-	double t_step=0.1;
+	double t_step=0.15;
 
 	//Initalise the vector .	MAYBE IT WOULD BE QUICKER TO USE A MALLOC AND 1D ARRAY
 	vector<double> v2(length,0);
