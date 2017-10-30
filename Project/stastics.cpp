@@ -149,7 +149,7 @@ double error_Bars(vector<double> results)
 
 double autocorrelation_Time(vector<double> data,vector<double>data_rotate,unsigned int length)
 {
-
+//not right!!
 	double sum1=0;
 	int dT=100;
 
@@ -230,12 +230,12 @@ double lattice_KineticEnergy(vector<double> p,unsigned int length)
 
 double Harmonic_hamiltonian(double p,double q,double q_plus )
 {
-	return (p*p*0.5) + (pow((q_plus - q),2)*0.5) + (4.5*q*q);
+	return (p*p*0.5) + (pow((q_plus - q),2)*0.5) + (0.5*q*q);
 }
 
 double Harmonic_action(double q, double q_plus)
 {
-	return (0.5*pow((q_plus - q),2) + (4.5 * pow(q,2)));
+	return (0.5*pow((q_plus - q),2) + (0.5 * pow(q,2)));
 }
 double Anarmonic_hamiltonian(double p,double q,double q_plus )
 {

@@ -73,7 +73,9 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
 // 				lattice[result_no][k] = State[1][k];
  				square_state[k] = State[1][k] * State[1][k];
  				//printf("%f\n",square_state[k]);
+ 				fprintf(output_X,"%f ",State[1][k]);
  			}
+ 			fprintf(output_X,"\n");
 
  			temp1 = avgX(square_state);
  			temp2 = avg_X_Sqd(square_state);
@@ -96,7 +98,7 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
  	
  	for(unsigned int i=0;i<length;i++)
  	{
- 		fprintf(output_X,"%f\n",State[1][i]);
+ 		//fprintf(output_X,"%f\n",State[1][i]);
  	}
  	for(unsigned int i=0;i<201;i++)
  	{
@@ -108,7 +110,7 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
 double hmcAlgorithm_Harmonic(unsigned int length,double t_step,vector<vector<double> > &old_state,vector<vector<double> > &temp_State,vector<double> &H_store)
 {
 
-	double min=0,mu=9;
+	double min=0,mu=1;
 	unsigned int steps = 10;
 
 	double H_old=0,H_new=0,H_inter=0;

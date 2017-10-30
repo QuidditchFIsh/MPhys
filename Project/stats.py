@@ -35,7 +35,7 @@ data=np.genfromtxt("HMC_X.dat", unpack=True)
 
 po=[]
 #stats calculations
-for j in range(101,len(i)):
+for j in range(1,len(i)):
 	sum1 += avgx[j]
 	sum2 += avgx2[j]
 	sum3 += action[j]
@@ -50,7 +50,7 @@ for j in range(101,len(i)):
 
 	
 	Mavgx.append(sum1/j)
-	Mavgx2.append(sum2/(j-100))
+	Mavgx2.append(sum2/(j))
 	Maction.append(sum3/j)
 	MKE.append(sum4/j)
 	Mdelta_h.append(sum5/j)
