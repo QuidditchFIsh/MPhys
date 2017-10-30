@@ -24,65 +24,6 @@ double avgX(vector<double> results)
 	return sum/length;
 }
 
-void moving_avg_X_Sqd(vector<vector<double> > results,vector<vector<double> > &stats_data,unsigned int iterations,unsigned int length)
-{	
-#if 0
-	FILE * output1;
-	output1 = fopen("HMC_Results_x_2_10","w");
-
-	double sum =0;
-	printf("%d %d\n",results.size(),results[0].size());
-	printf("%d\n",iterations/5);
-	for(unsigned int i=1;i<1000;i++)
-	{
-		for(unsigned int j=1;j < i;j++)
-		{	
-			sum += results[j][500]*results[j][500];
-			//printf("%d %d\n",i,j);
-
-		}
-		fprintf(output1,"%d %f \n ",i,sum/(double) i);
-		//printf("%f \n",sum/(double) i);
-		stats_data[i][1]=sum/(double) i;
-		sum=0;
-
-	}
-
-	//return sum/length;
-}
-#endif
-
-#if 1
-	
-	FILE * output1;
-	output1 = fopen("HMC_Results_x_2","w");
-
-	double sum =0,sum1=0;
-	printf("%d %d\n",results.size(),results[0].size());
-	printf("%d\n",iterations/5);
-	for(unsigned int i=1;i<1000;i++)
-	{
-		for(unsigned int j=1;j < i;j++)
-		{	
-			for(unsigned int k=0;k<length;k++)
-			{
-				sum1 +=results[j][k]*results[j][k];
-			}
-			sum1 = sum1/length;
-			sum += sum1;
-			sum1=0;
-			//printf("%d %d\n",i,j);
-		}
-		fprintf(output1,"%d %f \n ",i,sum/(double) i);
-		//printf("%f \n",sum/(double) i);
-		stats_data[i][1]=sum/(double) i;
-		sum=0;
-
-	}
-
-	//return sum/length;
-}
-#endif
 double avg_X_Sqd(vector<double> results)
 {	
 
@@ -140,28 +81,9 @@ double error_Bars(vector<double> results)
 	}
 
 	avgx = avgX(sample);
-	//avgxx = avg_X_Sqd(sample);
+	avgxx = avg_X_Sqd(sample);
 
 	return standard_Deviation(avgx,avgxx,(double)len);
-
-}
-
-
-double autocorrelation_Time(vector<double> data,vector<double>data_rotate,unsigned int length)
-{
-//not right!!
-	double sum1=0;
-	int dT=100;
-
-	rotate(data_rotate.begin(),data_rotate.begin()+dT,data_rotate.end());
-
-	for(unsigned int i=0;i<length ;i++)
-	{
-		sum1 += data[i] * data_rotate[i];
-	}
-
-	return sum1/(double)length;
-
 
 }
 
@@ -190,7 +112,6 @@ double lattice_Hamiltonian(vector<vector<double> > state,unsigned int length )
 	return H;
 
 }
-
 double lattice_Action(vector<double> q,unsigned int length)
 {
 	double S = 0;
@@ -252,24 +173,3 @@ double kinetic_Energy(double p)
 {
 	return (p * p * 0.5);
 }
-
-double Energy_gap_calc(vector<vector<double> > energyArray,int length)
-{
-	double sum1 =0,sum2=0;
-
-	for(unsigned int i=0;i<length;i++)
-	{
-		sum1 += energyArray[0][i] * energyArray[1][i];
-		sum2 += energyArray[0][i] * energyArray[2][i];
-	}
-	sum1 = sum1/length;
-	sum2 = sum2/length;
-
-	printf("%f %f\n",sum1,sum2);
-
-	return log(sum1/sum2);
-
-}
-
-
-

@@ -13,7 +13,7 @@ using namespace std;
 
 void lattice_Evolution(vector<vector<double> > &,unsigned int ,double ,unsigned int );
 
-double hmcAlgorithm_Harmonic(unsigned int ,double ,vector<vector<double> > &,vector<vector<double> > & ,vector<double> &);
+double hmcAlgorithm_Harmonic(unsigned int ,double ,vector<vector<double> > &,vector<vector<double> > & ,vector<double> &,double,unsigned int);
 
-double hmcAlgorithm_Anharmonic(unsigned int ,double ,vector<vector<double> > &,vector<vector<double> > & ,vector<double> &);
+double hmcAlgorithm_Anharmonic(unsigned int ,double ,vector<vector<double> > &,vector<vector<double> > & ,vector<double> &,double,double,unsigned int);
 
