@@ -24,13 +24,13 @@ for line in file:
 	avgx.append(float(b))
 	#avgxerr.append(float(c))
 	avgx2.append(float(d))
-	#avgx2err.append(float(e))
+	avgx2err.append(float(e))
 	action.append(float(f))
 	KE.append(float(gg))
 	#delta_h.append(float(hh))
 	#avgx4.append(float(ii))
 
-#data=np.genfromtxt("HMC_X.dat", unpack=True)
+data=np.genfromtxt("HMC_X.dat", unpack=True)
 #print(data)
 
 
@@ -58,48 +58,34 @@ for j in range(0,len(i)):
 
 
 	avgxerr.append((sum12/k)-(sum1*sum1/(k*k))/k)
-	avgx2err.append((sum22/k)-(sum2*sum2/(k*k))/k)
+	#avgx2err.append((sum22/k)-(sum2*sum2/(k*k))/k)
 	actionerr.append((sum32/k)-(sum3*sum3/(k*k))/k)
 	KEerr.append((sum42/k)-(sum4*sum4/(k*k))/k)
 	#delta_herr.append((sum52/j)-(sum5*sum5/(j*j))/j)
 
 
-print(Mavgx2)
-#print(Mavgx2[len(i)-202])
-#print(Mavgx4[len(i)-202])
-
-'''
-deltaT=250;sumDT=0;sumT=0;X_0=avgx[0]
-for j in range(0,len(i)-deltaT-1):
-	sumDT += X_0 * avgx[j+deltaT]
-sumDT = sumDT/(len(i)-deltaT-1)
-for j in range(0,len(i)-1):
-	sumT  += X_0 * avgx[j]
-sumT = sumT /(len(i)-1)
-
-E_1 = (-1/deltaT)*math.log(sumDT/sumT)
-print(E_1)
-'''
-
-print(len(i))
-print(len(Mavgx))
-print(len(avgxerr))
-
-
 #Plotting
-g=plt.figure()
-plt.ylabel('<X>')
-plt.xlabel('Monte Carlo Iterations')
+g=plt.figure(figsize=(8,6))
+gs1 = gridspec.GridSpec(2, 1, height_ratios=[3, 1]) 
+gx2=plt.subplot(gs1[0])
 plt.title('Average X')
-plt.errorbar(i,Mavgx,label='Simulated AvgX',yerr=avgxerr)
-plt.axhline(y=0,lw=1,color='red',label='Theoritical AvgX')
-plt.legend(loc='upper right')
+plt.ylabel('<X>')
+gx2.axhline(y=0.0,lw=1,color='red',label='Theoritical AvgX')
+gx2.plot(Mavgx,label='Simulated AvgX')
+gx2.set_ylim([-0.1,0.1])
+plt.legend(loc='lower right')
+
+gx=plt.subplot(gs1[1])
+plt.ylabel('<X> error')
+plt.xlabel('Iterations')
+gx.plot(avgxerr,label='Simulated AvgX Error',color='green')
 g.savefig("Average_X_Anharmonic.pdf")
-#g.savefig("graphs/Average_X_harmonic.pdf")
+
+
 
 h=plt.figure(figsize=(8,6))
-gs = gridspec.GridSpec(2, 1, height_ratios=[3, 1]) 
-hx2=plt.subplot(gs[0])
+gs2 = gridspec.GridSpec(2, 1, height_ratios=[3, 1]) 
+hx2=plt.subplot(gs2[0])
 plt.title('Average X^2')
 plt.ylabel('<X^2>')
 hx2.axhline(y=0.4472135955,lw=1,color='red',label='Theoritical AvgX^2')
@@ -107,7 +93,7 @@ hx2.plot(Mavgx2,label='Simulated AvgX^2')
 hx2.set_ylim([0,0.5])
 plt.legend(loc='center right')
 
-hx=plt.subplot(gs[1])
+hx=plt.subplot(gs2[1])
 plt.ylabel('<X^2> error')
 plt.xlabel('Iterations')
 hx.plot(avgx2err,label='Simulated AvgX^2 Error',color='green')
@@ -128,12 +114,14 @@ o.savefig("Average_X4_Anharmonic.pdf")
 #o.savefig("Average_X2_harmonic.pdf")
 
 k=plt.figure()
+axes=plt.gca()
 plt.xlabel('Monte Carlo Iterations')
 plt.ylabel('Action Per Lattice Site(S)')
 plt.title('Average Action')
 plt.plot(Maction,label='Simulated Action')
 plt.axhline(y=0.5,lw=1,color='red',label='Theoritical Action')
 plt.legend(loc='lower right')
+axes.set_ylim([0,0.6])
 k.savefig("Average_Action_Anharmonic.pdf")
 #k.savefig("graphs/Average_Action_harmonic.pdf")
 
@@ -144,7 +132,7 @@ plt.ylabel('Kinetic Energy Per Lattice Site')
 plt.title('Average Kinetic Energy')
 plt.plot(MKE,label='Simulated Avgerage Kinetic Energy')
 plt.axhline(y=0.5,lw=1,color='red',label='Theoritical Avgerage Kinetic Energy')
-plt.legend(loc='lower right')
+plt.legend(loc='upper right')
 l.savefig("Average_KE_Anharmonic.pdf")
 #l.savefig("graphs/Average_KE_harmonic.pdf")
 '''
@@ -158,7 +146,7 @@ plt.legend(loc='lower right')
 m.savefig("Average_Delta_H_Anharmonic.pdf")
 #m.savefig("graphs/Average_Delta_H_harmonic.pdf")
 '''
-'''
+
 n=plt.figure()
 x = np.linspace(-2,2,100) # 100 linearly spaced numbers
 y = (1/(3.141**0.5))*np.exp(-x**2)
@@ -167,7 +155,6 @@ out = plt.hist(data,bins=150,normed =1)
 n.savefig("Wavefunction_Anharmonic.pdf")
 #n.savefig("graphs/Wavefunction_harmonic.pdf")
 
-'''
 
 
 

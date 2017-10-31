@@ -60,9 +60,7 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
  			{
 				//lattice[result_no][k] = State[1][k];
  				square_state[k] = State[1][k] * State[1][k];
- 				fprintf(output_X,"%f ",State[1][k]);
- 			}
- 			fprintf(output_X,"\n");
+			}
 
  			temp1 = avgX(square_state);
  			temp2 = avg_X_Sqd(square_state);
@@ -78,9 +76,9 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
  	
  	printf("The aacceptance is %f percent \n",(acceptance*100)/(double) iterations);
 
- 	for(unsigned int i=0;i<201;i++)
- 	{
- 		fprintf(out,"%f \n",H_store[i]/(double)iterations);
+	for(unsigned int k=0;k<length;k++)
+	{
+ 		fprintf(output_X,"%f\n",State[1][k]);
  	}
 }
 
