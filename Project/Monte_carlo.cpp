@@ -22,13 +22,9 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
 	output_X = fopen("HMC_X.dat","w");
 
 	// p-0,q-1
-	vector<double> v1(length,0);
-	vector<vector<double> > State(2,v1);
-
 	vector<double> v(length,0);
+	vector<vector<double> > State(2,v);
 	vector<vector<double> >temp_State(2,v);
-
-	vector<double> v5(length,0);
 	vector<vector<double> >Energy_save(3,v);
 
 	vector<double> square_state(length,0);
@@ -75,7 +71,7 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
  			temp2=avg_X_Sqd(State[1]);
  			error_x2 = standard_Deviation(temp2,temp1,length);
 
- 			fprintf(output_stats,"%d %f %f %f %f %f %f %f\n",i,temp1,error_x,temp2,error_x2,lattice_Action(State[1],length),lattice_KineticEnergy(State[0],length),temp);
+ 			fprintf(output_stats,"%d %f %f %f %f %f %f\n",i,temp1,error_x,temp2,error_x2,lattice_Action(State[1],length),lattice_KineticEnergy(State[0],length));
  			
  			result_no++;
  	}

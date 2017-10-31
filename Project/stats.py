@@ -5,6 +5,7 @@ from matplotlib.axes import Axes
 import statistics 
 from array import *
 import math
+from matplotlib import gridspec
 
 #initalise arrays and variables
 avgx=[];avgx2=[];action=[];KE=[];delta_h=[];i=[];avgx4=[];jjj=[]
@@ -15,52 +16,52 @@ sum12=0;sum22=0;sum32=0;sum42=0;sum52=0;sum62=0
 
 #import all data from the file
 file  = open("HMC_Stats.dat",'r')
-file1 = open("HMC_X.dat","r")
+#file1 = open("HMC_X.dat","r")
 
 for line in file:
-	a,b,c,d,e,f,gg,hh,ii = line.split(' ', 8)
+	a,b,c,d,e,f,gg = line.split(' ', 6)
 	i.append(float(a))
 	avgx.append(float(b))
-	avgxerr.append(float(c))
+	#avgxerr.append(float(c))
 	avgx2.append(float(d))
-	avgx2err.append(float(e))
+	#avgx2err.append(float(e))
 	action.append(float(f))
 	KE.append(float(gg))
-	delta_h.append(float(hh))
-	avgx4.append(float(ii))
+	#delta_h.append(float(hh))
+	#avgx4.append(float(ii))
 
-data=np.genfromtxt("HMC_X.dat", unpack=True)
+#data=np.genfromtxt("HMC_X.dat", unpack=True)
 #print(data)
 
 
 po=[]
 #stats calculations
-for j in range(1,len(i)):
+for j in range(0,len(i)):
 	sum1 += avgx[j]
 	sum2 += avgx2[j]
 	sum3 += action[j]
 	sum4 += KE[j]
-	sum5 += delta_h[j]
+	#sum5 += delta_h[j]
 	
 	sum12 += avgx[j] * avgx[j]
 	sum22 += avgx2[j] * avgx2[j]
 	sum32 += action[j] * action[j]
 	sum42 += KE[j] * KE[j]
-	sum52 += delta_h[j] * delta_h[j]
+	#sum52 += delta_h[j] * delta_h[j]
 
-	
-	Mavgx.append(sum1/j)
-	Mavgx2.append(sum2/(j))
-	Maction.append(sum3/j)
-	MKE.append(sum4/j)
-	Mdelta_h.append(sum5/j)
+	k=j+1
+	Mavgx.append(sum1/k)
+	Mavgx2.append(sum2/k)
+	Maction.append(sum3/k)
+	MKE.append(sum4/k)
+	#Mdelta_h.append(sum5/j)
 
 
-	avgxerr.append((sum12/j)-(sum1*sum1/(j*j))/j)
-	avgx2err.append((sum22/j)-(sum2*sum2/(j*j))/j)
-	actionerr.append((sum32/j)-(sum3*sum3/(j*j))/j)
-	KEerr.append((sum42/j)-(sum4*sum4/(j*j))/j)
-	delta_herr.append((sum52/j)-(sum5*sum5/(j*j))/j)
+	avgxerr.append((sum12/k)-(sum1*sum1/(k*k))/k)
+	avgx2err.append((sum22/k)-(sum2*sum2/(k*k))/k)
+	actionerr.append((sum32/k)-(sum3*sum3/(k*k))/k)
+	KEerr.append((sum42/k)-(sum4*sum4/(k*k))/k)
+	#delta_herr.append((sum52/j)-(sum5*sum5/(j*j))/j)
 
 
 print(Mavgx2)
@@ -80,7 +81,9 @@ E_1 = (-1/deltaT)*math.log(sumDT/sumT)
 print(E_1)
 '''
 
-
+print(len(i))
+print(len(Mavgx))
+print(len(avgxerr))
 
 
 #Plotting
@@ -88,25 +91,28 @@ g=plt.figure()
 plt.ylabel('<X>')
 plt.xlabel('Monte Carlo Iterations')
 plt.title('Average X')
-plt.plot(Mavgx,label='Simulated AvgX')
+plt.errorbar(i,Mavgx,label='Simulated AvgX',yerr=avgxerr)
 plt.axhline(y=0,lw=1,color='red',label='Theoritical AvgX')
-plt.legend(loc='lower right')
+plt.legend(loc='upper right')
 g.savefig("Average_X_Anharmonic.pdf")
 #g.savefig("graphs/Average_X_harmonic.pdf")
 
-h=plt.figure()
-plt.ylabel('<X^2>')
-plt.xlabel('Monte Carlo Iterations')
+h=plt.figure(figsize=(8,6))
+gs = gridspec.GridSpec(2, 1, height_ratios=[3, 1]) 
+hx2=plt.subplot(gs[0])
 plt.title('Average X^2')
-#hx2=h.add_subplot(211)
-plt.plot(Mavgx2,label='Simulated AvgX^2')
-#plt.axhline(y=0.4472135955,lw=1,color='red',label='Theoritical AvgX^2')
-plt.axhline(y=0.1767766953,lw=1,color='red',label='Theoritical AvgX^2')
+plt.ylabel('<X^2>')
+hx2.axhline(y=0.4472135955,lw=1,color='red',label='Theoritical AvgX^2')
+hx2.plot(Mavgx2,label='Simulated AvgX^2')
+hx2.set_ylim([0,0.5])
 plt.legend(loc='center right')
-#hx=h.add_subplot(212)
-#hx.plot(avgx2err,label='Simulated AvgX^2 Error')
+
+hx=plt.subplot(gs[1])
+plt.ylabel('<X^2> error')
+plt.xlabel('Iterations')
+hx.plot(avgx2err,label='Simulated AvgX^2 Error',color='green')
 h.savefig("Average_X2_Anharmonic.pdf")
-#h.savefig("graphs/Average_X2_harmonic.pdf")
+
 
 o=plt.figure()
 plt.ylabel('<X^4>')
@@ -141,7 +147,7 @@ plt.axhline(y=0.5,lw=1,color='red',label='Theoritical Avgerage Kinetic Energy')
 plt.legend(loc='lower right')
 l.savefig("Average_KE_Anharmonic.pdf")
 #l.savefig("graphs/Average_KE_harmonic.pdf")
-
+'''
 m=plt.figure()
 plt.xlabel('Monte Carlo Iterations')
 plt.ylabel('Delta_H')
@@ -151,7 +157,8 @@ plt.axhline(y=0,lw=1,color='red',label='Theoritical Delta_H')
 plt.legend(loc='lower right')
 m.savefig("Average_Delta_H_Anharmonic.pdf")
 #m.savefig("graphs/Average_Delta_H_harmonic.pdf")
-
+'''
+'''
 n=plt.figure()
 x = np.linspace(-2,2,100) # 100 linearly spaced numbers
 y = (1/(3.141**0.5))*np.exp(-x**2)
@@ -160,7 +167,7 @@ out = plt.hist(data,bins=150,normed =1)
 n.savefig("Wavefunction_Anharmonic.pdf")
 #n.savefig("graphs/Wavefunction_harmonic.pdf")
 
-
+'''
 
 
 
