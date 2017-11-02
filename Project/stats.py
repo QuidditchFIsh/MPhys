@@ -63,6 +63,10 @@ for j in range(0,len(i)):
 	KEerr.append((sum42/k)-(sum4*sum4/(k*k))/k)
 	#delta_herr.append((sum52/j)-(sum5*sum5/(j*j))/j)
 
+print(Mavgx[-1])
+print(Mavgx2[-1])
+
+
 
 #Plotting
 g=plt.figure(figsize=(8,6))
@@ -88,9 +92,9 @@ gs2 = gridspec.GridSpec(2, 1, height_ratios=[3, 1])
 hx2=plt.subplot(gs2[0])
 plt.title('Average X^2')
 plt.ylabel('<X^2>')
-hx2.axhline(y=0.4472135955,lw=1,color='red',label='Theoritical AvgX^2')
+#hx2.axhline(y=0.4472135955,lw=1,color='red',label='Theoritical AvgX^2')
 hx2.plot(Mavgx2,label='Simulated AvgX^2')
-hx2.set_ylim([0,0.5])
+#hx2.set_ylim([0,0.5])
 plt.legend(loc='center right')
 
 hx=plt.subplot(gs2[1])
@@ -148,10 +152,10 @@ m.savefig("Average_Delta_H_Anharmonic.pdf")
 '''
 
 n=plt.figure()
-x = np.linspace(-2,2,100) # 100 linearly spaced numbers
-y = (1/(3.141**0.5))*np.exp(-x**2)
-out1 = plt.plot(x,y)
-out = plt.hist(data,bins=150,normed =1)
+#x = np.linspace(-2,2,100) # 100 linearly spaced numbers
+#y = (1/(3.141**0.5))*np.exp(-x**2)
+#out1 = plt.plot(x,y)
+#out = plt.hist(data,bins=150,normed =1)
 n.savefig("Wavefunction_Anharmonic.pdf")
 #n.savefig("graphs/Wavefunction_harmonic.pdf")
 

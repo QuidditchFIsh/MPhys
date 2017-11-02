@@ -5,35 +5,46 @@ from matplotlib.axes import Axes
 from array import *
 import linecache
 
-dt=50
-sum =0
-length = 8000
+sum =0;sum1=0;sum2=0
 data=[]
+data1=[]
 
 f = open("data.txt", "w")
-for i in range(0,10):
+g = open("logData.txt","w")
+for j in range(0,9000):
+	x  =linecache.getline("HMC_X.dat",90000+j)
+	xt =linecache.getline("HMC_X.dat",90000+1+j)
+	xt1=linecache.getline("HMC_X.dat",90000+2+j)
 
-	x=linecache.getline("HMC_X.dat",7000)
-	xt=linecache.getline("HMC_X.dat",7000+i)
-	x = x.split(" ")
-	xt = xt.split(" ")
-	del x[-1]
-	del xt[-1]
+	x   = x.split(" ")
+	xt  = xt.split(" ")
+	xt1 = xt1.split(" ")
 
-	x = [float(a) for a in x]
-	xt = [float(a) for a in xt]
+	del x  [-1]
+	del xt [-1]
+	del xt1[-1]
 
+	x   = [float(a) for a in x  ]
+	xt  = [float(b) for b in xt ]
+	xt1 = [float(c) for c in xt1]
+	
 	for i in range(0,len(x)):
-		sum += x[i] * xt[i]
-	#if(sum>0):
-	data.append(sum*sqrt(5)/len(x))
-	#else:
-		#data.append(0)
+		sum  += x[i] * xt1[i]
+		sum1 += x[i] * xt [i]
+		#print(str(x[i]) + " " + str(xt[i]) + " " + str(xt1[i]))
 
-	sum=0
-for i in data:
-	f.write(	str(i)	+"\n")
-print(data)
+	#if(sum>0):
+#	sum  = sum/len(x)
+#	sum1 = sum1/len(x)
+	sum2 += log(sum1/sum)
+	if(j>1000):
+		data.append(sum2/(j))
+#else:
+#data.append(0)
+	#print(log(sum1/sum))
+
+print(sum2/9000)
+#plt.yscale('log')
 plt.plot(data)
 #plt.yscale('log')
 plt.show()

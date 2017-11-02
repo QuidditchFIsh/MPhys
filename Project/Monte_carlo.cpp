@@ -36,7 +36,7 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
  	normal_distribution<double> distribution(0.0,1.0);
 
  	double acceptance =0,delta_H_Average=0,temp=0,temp1=0,temp2=0,error_x2=0,error_x=0,mu = 1,lamba = 0.1;
- 	unsigned int steps =10,result_no=0;
+ 	unsigned int steps =15,result_no=0;
 
  	//run main algorithm
  	for(unsigned int i = 0; i<iterations;i++)
@@ -56,30 +56,34 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
  #endif
  		
 //perform the stats calculations for the raw data
- 			for(unsigned int k = 0;k<length;k++)
- 			{
-				//lattice[result_no][k] = State[1][k];
- 				square_state[k] = State[1][k] * State[1][k];
-			}
+ 		for(unsigned int k = 0;k<length;k++)
+ 		{
+			//lattice[result_no][k] = State[1][k];
+			square_state[k] = State[1][k] * State[1][k];
+		}
 
- 			temp1 = avgX(square_state);
- 			temp2 = avg_X_Sqd(square_state);
- 			error_x = standard_Deviation(temp2,temp1,length);
- 			temp1=avgX(State[1]);
- 			temp2=avg_X_Sqd(State[1]);
- 			error_x2 = standard_Deviation(temp2,temp1,length);
+ 		temp1 = avgX(square_state);
+ 		temp2 = avg_X_Sqd(square_state);
+		error_x = standard_Deviation(temp2,temp1,length);
+ 		temp1=avgX(State[1]);
+ 		temp2=avg_X_Sqd(State[1]);
+ 		error_x2 = standard_Deviation(temp2,temp1,length);
 
- 			fprintf(output_stats,"%d %f %f %f %f %f %f\n",i,temp1,error_x,temp2,error_x2,lattice_Action(State[1],length),lattice_KineticEnergy(State[0],length));
+ 		fprintf(output_stats,"%d %f %f %f %f %f %f\n",i,temp1,error_x,temp2,error_x2,lattice_Action(State[1],length),lattice_KineticEnergy(State[0],length));
  			
- 			result_no++;
+ 		result_no++;
+
+ 		for(unsigned int l=0;l<length;l++)
+		{
+ 			fprintf(output_X,"%f ",State[1][l]);
+ 		}
+ 		fprintf(output_X,"\n");
+
  	}
  	
  	printf("The aacceptance is %f percent \n",(acceptance*100)/(double) iterations);
 
-	for(unsigned int k=0;k<length;k++)
-	{
- 		fprintf(output_X,"%f\n",State[1][k]);
- 	}
+
 }
 
 double hmcAlgorithm_Harmonic(unsigned int length,double t_step,vector<vector<double> > &old_state,vector<vector<double> > &temp_State,vector<double> &H_store,double mu,unsigned int steps)
