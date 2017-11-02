@@ -6,7 +6,7 @@
 */
 
 #include "stastics.h"
-#define Stats_Flip 1
+#define Stats_Flip 0
 //1 = Harmonic
 //0 = Anharmonic
 
@@ -160,14 +160,14 @@ double Harmonic_action(double q, double q_plus)
 }
 double Anarmonic_hamiltonian(double p,double q,double q_plus )
 {
-	return (p*p*0.5) + (pow((q_plus - q),2)*0.5) + (-20 * pow(q,2)) + (0.1*pow(q,4));
-	//return (p*p*0.5) + (pow((q_plus - q),2)*0.5) + (0.25*pow((q*q) - 1,2));
+	//return (p*p*0.5) + (pow((q_plus - q),2)*0.5) + (-20 * pow(q,2)) + (0.1*pow(q,4));
+	return (p*p*0.5) + (pow((q_plus - q),2)*0.5) + (pow((q*q) - 2,2));
 }
 
 double Anarmonic_action(double q, double q_plus)
 {
-	return (0.5*pow((q_plus - q),2) + (-20 * pow(q,2)) + (0.1*pow(q,4)));
-	//return (0.5*pow((q_plus - q),2) + (0.25*pow((q*q) - 1,2)));
+	//return (0.5*pow((q_plus - q),2) + (-20 * pow(q,2)) + (0.1*pow(q,4)));
+	return (0.5*pow((q_plus - q),2) + (pow((q*q) - 2,2)));
 }
 double kinetic_Energy(double p)
 {
