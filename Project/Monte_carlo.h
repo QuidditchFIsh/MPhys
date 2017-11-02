@@ -17,3 +17,7 @@ double hmcAlgorithm_Harmonic(unsigned int ,double ,vector<vector<double> > &,vec
 
 double hmcAlgorithm_Anharmonic(unsigned int ,double ,vector<vector<double> > &,vector<vector<double> > & ,vector<double> &,double,double,unsigned int);
 
+double hmcAlgorithm_Anharmonic_uncoupled(unsigned int ,double ,vector<vector<double> > &,vector<vector<double> > & ,vector<double> &,double,double,unsigned int);
+
+
+

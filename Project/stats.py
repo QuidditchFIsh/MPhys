@@ -22,7 +22,7 @@ for line in file:
 	a,b,c,d,e,f,gg = line.split(' ', 6)
 	i.append(float(a))
 	avgx.append(float(b))
-	avgxerr.append(float(c))
+	#avgxerr.append(float(c))
 	avgx2.append(float(d))
 	avgx2err.append(float(e))
 	action.append(float(f))
@@ -34,7 +34,7 @@ data=np.genfromtxt("HMC_X.dat", unpack=True)
 #print(data)
 
 #stats calculations
-for j in range(0,len(i)):
+for j in range(8000,len(i)):
 	sum1 += avgx[j]
 	sum2 += avgx2[j]
 	sum3 += action[j]
@@ -47,7 +47,7 @@ for j in range(0,len(i)):
 	sum42 += KE[j] * KE[j]
 	#sum52 += delta_h[j] * delta_h[j]
 
-	k=j+1
+	k=j+1-8000
 	Mavgx.append(sum1/k)
 	Mavgx2.append(sum2/k)
 	Maction.append(sum3/k)
@@ -55,18 +55,19 @@ for j in range(0,len(i)):
 	#Mdelta_h.append(sum5/j)
 
 
-	avgxerr.append((sum12/k)-(sum1*sum1/(k*k))/k)
-	#avgx2err.append((sum22/k)-(sum2*sum2/(k*k))/k)
-	actionerr.append((sum32/k)-(sum3*sum3/(k*k))/k)
-	KEerr.append((sum42/k)-(sum4*sum4/(k*k))/k)
+	avgxerr.append(sqrt((sum12/k)-(sum1*sum1/(k*k))/k))
+	#avgx2err.append(sqrt((sum22/k)-(sum2*sum2/(k*k))/k))
+	actionerr.append(sqrt((sum32/k)-(sum3*sum3/(k*k))/k))
+	KEerr.append(sqrt((sum42/k)-(sum4*sum4/(k*k))/k))
 	#delta_herr.append((sum52/j)-(sum5*sum5/(j*j))/j)
+del avgx2err[:8000]
 
 
 iter =len(i)
-length=1000
-mu=-10
+length=10000
+mu=1
 f=5
-oscillator_flip=0
+oscillator_flip=1
 #1=harmonic,0=anharmonic
 
 print(avgx[-1])
@@ -104,7 +105,7 @@ plt.ylabel('<X^2>')
 hx2.axhline(y=0.4472135955,lw=1,color='red',label='Theoritical AvgX^2')
 hx2.plot(Mavgx2,label='Simulated AvgX^2')
 #hx2.set_ylim([0.4,0.48])
-plt.legend(loc='center right')
+plt.legend(loc='upper right')
 
 hx=plt.subplot(gs2[1])
 plt.ylabel('<X^2> error')
@@ -185,7 +186,7 @@ m.savefig("Average_Delta_H_Harmonic_"+iter +"_"+length+"_"+mu+".pdf")
 n=plt.figure()
 x = np.linspace(-2,2,100) # 100 linearly spaced numbers
 y = (1/(3.141**0.5))*np.exp(-x**2)
-#out1 = plt.plot(x,y)
+out1 = plt.plot(x,y)
 out = plt.hist(data,bins=150,normed =1)
 if(oscillator_flip==1):
 	n.savefig("graphs/Average_Wavefunction_Harmonic_"+str(iter) +"_"+str(length)+"_"+str(mu)+".pdf")
