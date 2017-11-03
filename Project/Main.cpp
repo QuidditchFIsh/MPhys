@@ -16,10 +16,10 @@ int main(){
 	//Number of iterations of the HMC algorithm to be performed, and number of times the algoirthm is 
 	//going to loop
 
-	unsigned int iterations = 20000,length = 10000;
+	unsigned int iterations = 20000,length = 2000;
 	//unsigned int iterations = 20,length = 10;
 
-	double t_step=0.05;
+	double t_step=0.0125;
 
 	vector<double> v2(length,0);
 	vector<vector<double> >lattice(iterations,v2);

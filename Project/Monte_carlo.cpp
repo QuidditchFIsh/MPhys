@@ -37,7 +37,7 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
  	normal_distribution<double> distribution(0.0,1.0);
 
  	double acceptance =0,delta_H_Average=0,temp=0,temp1=0,temp2=0,error_x2=0,error_x=0,mu = 1,lamba = 0.1;
- 	unsigned int steps =15,result_no=0;
+ 	unsigned int steps =160,result_no=0;
 
  	//run main algorithm
  	for(unsigned int i = 0; i<iterations;i++)
@@ -54,7 +54,7 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
  		}
 
  #if Oscillator_flip 
- 		acceptance += hmcAlgorithm_Harmonic(length,t_step,State,temp_State,H_store,mu,steps);
+ 		delta_H_Average += hmcAlgorithm_Harmonic(length,t_step,State,temp_State,H_store,mu,steps);
  #endif
 
  #if !Oscillator_flip
@@ -68,18 +68,14 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
 			square_state[k] = State[1][k] * State[1][k];
 		}
 
- 		temp1 = avgX(square_state);
- 		temp2 = avg_X_Sqd(square_state);
-		error_x = standard_Deviation(temp2,temp1,length);
- 		temp1=avgX(State[1]);
- 		temp2=avg_X_Sqd(State[1]);
- 		error_x2 = standard_Deviation(temp2,temp1,length);
+ 	// 	temp1 = avgX(square_state);
+ 	// 	temp2 = avg_X_Sqd(square_state);
+		// error_x = standard_Deviation(temp2,temp1,length);
+ 	// 	temp1=avgX(State[1]);
+ 	// 	temp2=avg_X_Sqd(State[1]);
+ 	// 	error_x2 = standard_Deviation(temp2,temp1,length);
 
- 		fprintf(output_stats,"%d %f %f %f %f %f %f\n",i,temp1,State[1][500],temp2,error_x2,lattice_Action(State[1],length),lattice_KineticEnergy(State[0],length));
- 			
- 		result_no++;
-
-
+ 	// 	fprintf(output_stats,"%d %f %f %f %f %f %f\n",i,temp1,delta_H_Average,temp2,error_x2,lattice_Action(State[1],length),lattice_KineticEnergy(State[0],length));
 
  	}
  	 for(unsigned int l=0;l<length;l++)
@@ -89,6 +85,7 @@ void lattice_Evolution(vector<vector<double> > &lattice,unsigned int length,doub
  	fprintf(output_X,"\n");
 
  	printf("The aacceptance is %f percent \n",(acceptance*100)/(double) iterations);
+ 	printf("The Average Delta H was %f\n",delta_H_Average/iterations);
 
 
 }
@@ -178,11 +175,11 @@ double hmcAlgorithm_Harmonic(unsigned int length,double t_step,vector<vector<dou
 		{
 			old_state[1][i] = temp_State[1][i];
 		}
-		//return H_old - H_new;
-		return 1;
+		return H_old - H_new;
+		//return 1;
 	}
-	//return H_old - H_new;
-	return 0;
+	return H_old - H_new;
+	//return 0;
 }
 
 double hmcAlgorithm_Anharmonic(unsigned int length,double t_step,vector<vector<double> > &old_state,vector<vector<double> > &temp_State,vector<double> &H_store,double mu,double lamba,unsigned int steps)
