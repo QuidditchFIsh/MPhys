@@ -9,28 +9,33 @@
 #include "Main.h"
 
 int main(){
-
-	printf("Beginning Simulation Initalising System\n");
+	printf("\n");
+	printf("Beginning Simulation Initalising System\n\n");
 	clock_t t1,t2;
 
-	//Number of iterations of the HMC algorithm to be performed, and number of times the algoirthm is 
-	//going to loop
+	//Number of iterations of the HMC algorithm to be performed, and number of times the algoirthm is going to loop
+	unsigned int iterations = 100000,length = 1000;
 
-	unsigned int iterations = 20000,length = 2000;
-	//unsigned int iterations = 20,length = 10;
-
-	double t_step=0.0125;
+	double t_step=0.05;
+	double mu=1;
+	double lamba=0;
+	printf("##########Simulation Parameters##########\n");
+	printf("\n");
+	printf("Oscillators:	%d\nIterations:	%d\nT_Step:         %f\n",length,iterations,t_step);
+	printf("\n");
+	printf("##########Equation Parameters############\n");
+	printf("\n");
+	printf("Lattice Spacing:	%d\nMass:   		%d\nmu:			%f\nLamba:  		%f\n",1,1,mu,lamba);
 
 	vector<double> v2(length,0);
 	vector<vector<double> >lattice(iterations,v2);
 
-	printf("Started Simulation with:\n %d Oscillators\n Iterating %d times at a time step of %f\n",length,iterations,t_step);
-	
 	t1=clock();
-	lattice_Evolution(lattice,length,t_step,iterations);
+	lattice_Evolution(lattice,length,t_step,iterations,mu,lamba);
 	t2=clock();
 	
 	float seconds =((float)t2-(float)t1)/(CLOCKS_PER_SEC);
-	printf("Simulation Completed in %f seconds\n",seconds);
+	printf("Simulation Completed in %f seconds\n\n",seconds);
+	printf("########## End Simulation ##########\n\n");
 
 }

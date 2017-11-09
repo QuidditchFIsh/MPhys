@@ -47,7 +47,7 @@ double avg_X_four(vector<double> results)
 
 		for(unsigned int j=0;j<length;j++)
 		{
-			sum += pow(results[j],4);
+			sum += results[j]*results[j]*results[j]*results[j];
 		}
 
 	return sum/(double)length;
@@ -87,26 +87,28 @@ double error_Bars(vector<double> results)
 
 }
 
-double lattice_Hamiltonian(vector<vector<double> > state,unsigned int length )
+double lattice_Hamiltonian(vector<vector<double> > state,unsigned int length,double mu,double lamba)
 {
 	double H=0;
 	//loop for all sites which are not effected by periodic BC's
 #if Stats_Flip
+	
 	for(unsigned int i=0;i<length-1;i++)
 	{
-		H += Harmonic_hamiltonian(state[0][i],state[1][i],state[1][i+1]);
+		H += Harmonic_hamiltonian(state[0][i],state[1][i],state[1][i+1],mu);
 	}
 	//Periodic BC sites
-	H += Harmonic_hamiltonian(state[0][length-1],state[1][length-1],state[1][0]);
+	H += Harmonic_hamiltonian(state[0][length-1],state[1][length-1],state[1][0],mu);
+
 #endif
 
 #if !Stats_Flip
 	for(unsigned int i=0;i<length-1;i++)
 	{
-		H += Anarmonic_hamiltonian(state[0][i],state[1][i],state[1][i+1]);
+		H += Anarmonic_hamiltonian(state[0][i],state[1][i],state[1][i+1],mu,lamba);
 	}
 	//Periodic BC sites
-	H += Anarmonic_hamiltonian(state[0][length-1],state[1][length-1],state[1][0]);
+	H += Anarmonic_hamiltonian(state[0][length-1],state[1][length-1],state[1][0],mu,lamba);
 #endif
 
 	return H;
@@ -149,27 +151,27 @@ double lattice_KineticEnergy(vector<double> p,unsigned int length)
 }
 
 
-double Harmonic_hamiltonian(double p,double q,double q_plus )
+double Harmonic_hamiltonian(double p,double q,double q_plus,double mu)
 {
-	return (p*p*0.5) + (pow((q_plus - q),2)*0.5) + (0.5*q*q);
+	return (p*p*0.5) + ((pow((q_plus - q),2)*0.5) + (mu*0.5*q*q));
 }
 
 double Harmonic_action(double q, double q_plus)
 {
-	return (0.5*pow((q_plus - q),2) + (0.5 * pow(q,2)));
+	return ((pow((q_plus - q),2)*0.5) + (0.5*q*q));
 }
-double Anarmonic_hamiltonian(double p,double q,double q_plus )
+double Anarmonic_hamiltonian(double p,double q,double q_plus,double mu,double lamba)
 {
-	//return (p*p*0.5) + (pow((q_plus - q),2)*0.5) + (-20 * pow(q,2)) + (0.1*pow(q,4));
-	//return (p*p*0.5) + (pow((q_plus - q),2)*0.5) + (pow((q*q) - 2,2));
-	return (p*p*0.5) + (pow((q*q) - 2,2));
+	return (p*p*0.5) + (pow((q_plus - q),2)*0.5) + (mu*0.5*q*q) + (lamba*pow(q,4));
+	//return (p*p*0.5) + (pow((q_plus - q),2)*0.5) + (pow((q*q) - 0,2));
+	//return (p*p*0.5) + 1*(pow((q*q) - 0,2));
 }
 
 double Anarmonic_action(double q, double q_plus)
 {
-	//return (0.5*pow((q_plus - q),2) + (-20 * pow(q,2)) + (0.1*pow(q,4)));
-	//return (0.5*pow((q_plus - q),2) + (pow((q*q) - 2,2)));
-	return  (pow((q*q) - 2,2));
+	return (0.5*pow((q_plus - q),2) + (0 * pow(q,2)) + (1*pow(q,4)));
+	//return (0.5*pow((q_plus - q),2) + (1*pow((q*q) + 1,2)));
+	//return  1*(pow((q*q) - 0,2));
 }
 double kinetic_Energy(double p)
 {
